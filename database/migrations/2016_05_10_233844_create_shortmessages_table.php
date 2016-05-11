@@ -13,12 +13,11 @@ class CreateShortmessagesTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('shortmessages', function(Blueprint $table) {
+		Schema::create('short_messages', function(Blueprint $table) {
             $table->increments('id');
-			$table->string('from');
-			$table->string('to');
-			$table->string('message');
-
+			$table->string('from')->nullable()->index();
+			$table->string('to')->nullable()->index();
+			$table->string('message')->index();
             $table->timestamps();
 		});
 	}
@@ -30,7 +29,7 @@ class CreateShortmessagesTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('shortmessages');
+		Schema::drop('short_messages');
 	}
 
 }

@@ -9,7 +9,8 @@
         "laravel/framework": "5.2.*",
         "prettus/l5-repository": "^2.5",
         "league/fractal": "^0.13.0",
-        "lbhurtado/simple-txtcmdr-drivers": "^0.1.2"
+        "lbhurtado/simple-txtcmdr-drivers": "^0.1.2",
+        "league/csv": "^8.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
