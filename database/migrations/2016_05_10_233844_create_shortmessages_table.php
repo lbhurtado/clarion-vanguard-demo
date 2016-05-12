@@ -15,9 +15,10 @@ class CreateShortmessagesTable extends Migration
 	{
 		Schema::create('short_messages', function(Blueprint $table) {
             $table->increments('id');
-			$table->string('from')->nullable()->index();
-			$table->string('to')->nullable()->index();
-			$table->string('message')->index();
+			$table->string('from')->index();
+			$table->string('to')->index();
+			$table->text('message');
+			$table->tinyInteger('direction');
             $table->timestamps();
 		});
 	}

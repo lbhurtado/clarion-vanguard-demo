@@ -10,6 +10,7 @@
 | database. Just tell the factory how a default model should look.
 |
 */
+use App\Mobile;
 
 $factory->define(App\User::class, function (Faker\Generator $faker) {
     return [
@@ -23,5 +24,20 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 $factory->define(App\Entities\Group::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->company
+    ];
+});
+
+$factory->define(App\Entities\Contact::class, function (Faker\Generator $faker) {
+    return [
+        'mobile' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'handle' => $faker->userName,
+    ];
+});
+
+$factory->define(App\Entities\ShortMessage::class, function (Faker\Generator $faker) {
+    return [
+        'from' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'to' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'message' => $faker->sentence,
     ];
 });

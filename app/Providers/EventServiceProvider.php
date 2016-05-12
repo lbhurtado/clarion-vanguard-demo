@@ -13,8 +13,29 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\SomeEvent' => [
-            'App\Listeners\EventListener',
+        'App\Events\ShortMessageWasRecorded' => [
+            'App\Listeners\Capture\Contact',
+            'App\Listeners\Capture\GroupMembership',
+        ],
+        'App\Events\ContactWasCreated' => [
+            'App\Listeners\Notify\ContactAboutContactCreation',
+            'App\Listeners\Relay\ToOthersAboutContactCreation',
+        ],
+        'App\Events\GroupMembershipsWereProcessed' => [
+            'App\Listeners\Notify\ContactAboutGroupMembershipProcessing',
+            'App\Listeners\Relay\ToOthersAboutGroupMembershipProcessing',
+        ],
+        'App\Events\BroadcastWasRequested' => [
+            'App\Listeners\Notify\ContactAboutBroadcastRequest',
+            'App\Listeners\Relay\ToOthersAboutBroadcastRequest',
+        ],
+        'App\Events\BroadcastWasApproved' => [
+            'App\Listeners\Notify\ContactAboutBroadcastApproval',
+            'App\Listeners\Relay\ToOthersAboutBroadcastApproval',
+        ],
+        'App\Events\BroadcastWasSent' => [
+            'App\Listeners\Notify\ContactAboutBroadcastSending',
+            'App\Listeners\Relay\ToOthersAboutBroadcastSending',
         ],
     ];
 

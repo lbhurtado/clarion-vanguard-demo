@@ -10,14 +10,16 @@
         "prettus/l5-repository": "^2.5",
         "league/fractal": "^0.13.0",
         "lbhurtado/simple-txtcmdr-drivers": "^0.1.2",
-        "league/csv": "^8.0"
+        "league/csv": "^8.0",
+        "propaganistas/laravel-phone": "^2.7"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "0.9.*",
         "phpunit/phpunit": "~4.0",
         "symfony/css-selector": "2.8.*|3.0.*",
-        "symfony/dom-crawler": "2.8.*|3.0.*"
+        "symfony/dom-crawler": "2.8.*|3.0.*",
+        "laracasts/generators": "^1.1"
     },
     "autoload": {
         "classmap": [

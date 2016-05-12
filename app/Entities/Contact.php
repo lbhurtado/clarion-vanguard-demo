@@ -15,4 +15,9 @@ class Contact extends Model implements Transformable
 		'handle',
 	];
 
+	public function groups()
+	{
+		return $this->belongsToMany(Group::class);
+	}
+
 }

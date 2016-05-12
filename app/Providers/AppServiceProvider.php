@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Laracasts\Generators\GeneratorsServiceProvider;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if ($this->app->environment() == 'local') {
+            $this->app->register(GeneratorsServiceProvider::class);
+        }
     }
 }

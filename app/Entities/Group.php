@@ -14,4 +14,7 @@ class Group extends Model implements Transformable
 		'name',
 	];
 
+    function contacts() {
+        return $this->belongsToMany(Contact::class);
+    }
 }
