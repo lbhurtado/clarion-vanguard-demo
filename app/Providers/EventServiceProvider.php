@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -13,15 +13,16 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'App\Events\ShortMessageWasRecorded' => [
-            'App\Listeners\Capture\Contact',
-            'App\Listeners\Capture\GroupMembership',
+        \App\Events\ShortMessageWasRecorded::class => [
+            \App\Listeners\Capture\Contact::class,
+            \App\Listeners\Capture\GroupMembership::class,
+            'App\Listeners\Capture\BroadcastRequest',
         ],
-        'App\Events\ContactWasCreated' => [
+        \App\Events\ContactWasCreated::class => [
             'App\Listeners\Notify\ContactAboutContactCreation',
             'App\Listeners\Relay\ToOthersAboutContactCreation',
         ],
-        'App\Events\GroupMembershipsWereProcessed' => [
+        \App\Events\GroupMembershipsWereProcessed::class => [
             'App\Listeners\Notify\ContactAboutGroupMembershipProcessing',
             'App\Listeners\Relay\ToOthersAboutGroupMembershipProcessing',
         ],

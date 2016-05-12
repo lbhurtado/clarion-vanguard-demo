@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'driver' => 'telerivet',
+    'driver' => env('DEFAULT_SMS_DRIVER', 'log'),
     'from' => 'Your Number or Email',
     'telerivet' => [
         'api_key'    => env('TELERIVET_API_KEY'),

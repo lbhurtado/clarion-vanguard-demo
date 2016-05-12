@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Events\ShortMessageWasRecorded;
+use App\Events\ContactWasCreated;
 use App\Entities\ShortMessage;
 use App\Entities\Contact;
 use App\Mobile;
@@ -31,6 +32,10 @@ class ModelServiceProvider extends ServiceProvider
         Contact::creating(function ($model) {
             $model->mobile = Mobile::number($model->mobile);
             $model->handle = $model->handle ?: $model->mobile;
+        });
+
+        Contact::created(function ($model) {
+            event(new ContactWasCreated($model));
         });
     }
 

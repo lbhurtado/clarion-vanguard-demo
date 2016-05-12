@@ -2,22 +2,23 @@
 
 namespace App\Events;
 
-use App\Events\Event;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Queue\SerializesModels;
+use App\Entities\ShortMessage;
+use App\Events\Event;
 
 class GroupMembershipsWereProcessed extends Event
 {
     use SerializesModels;
 
+    public $shortMessage;
+
     /**
-     * Create a new event instance.
-     *
-     * @return void
+     * @param ShortMessage $shortMessage
      */
-    public function __construct()
+    public function __construct(ShortMessage $shortMessage)
     {
-        //
+        $this->shortMessage = $shortMessage;
     }
 
     /**

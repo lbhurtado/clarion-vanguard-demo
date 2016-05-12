@@ -2,7 +2,9 @@
 
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use App\Repositories\ShortMessageRepository;
+use App\Jobs\CreateContactFromShortMessage;
 use App\Events\ShortMessageWasRecorded;
+use App\Repositories\ContactRepository;
 use App\Entities\ShortMessage;
 use App\Mobile;
 
@@ -52,5 +54,48 @@ class ShortMessageTest extends TestCase
     {
         $this->expectsEvents(ShortMessageWasRecorded::class);
         factory(ShortMessage::class)->create();
+    }
+
+    /** @test */
+    function short_message_has_a_calculated_mobile_attribute()
+    {
+        $short_message = factory(ShortMessage::class)->create(['from' => '09173011987', 'direction' => INCOMING]);
+
+        $this->assertEquals(Mobile::number('09173011987 '), $short_message->mobile);
+
+        $short_message = factory(ShortMessage::class)->create(['to' => '09173011987', 'direction' => OUTGOING]);
+
+        $this->assertEquals(Mobile::number('09173011987 '), $short_message->mobile);
+
+    }
+
+    /** @test */
+    function short_message_creates_a_create_contact_from_short_message_job()
+    {
+        $this->expectsJobs(CreateContactFromShortMessage::class);
+
+        factory(ShortMessage::class)->create();
+    }
+
+    /** @test */
+    function short_message_create_a_contact()
+    {
+        factory(ShortMessage::class)->create(['from' => '09173011987', 'direction' => INCOMING]);
+
+        $contact = $this->app->make(ContactRepository::class)
+            ->skipPresenter()
+            ->findByField('mobile', Mobile::number('09173011987'))
+            ->first();
+
+        $this->assertEquals(Mobile::number('09173011987'), $contact->mobile);
+        $this->assertEquals(Mobile::number('09173011987'), $contact->handle);
+    }
+
+    /** @test */
+    function short_message_has_instructions()
+    {
+        $short_message = factory(ShortMessage::class)->create(['message' => 'brods please ...']);
+
+        $this->assertEquals('brods', $short_message->getInstruction()->getKeyword());
     }
 }

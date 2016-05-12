@@ -2,21 +2,16 @@
 
 namespace App\Listeners\Capture;
 
-use App\Events\ShortMessageWasRecorded;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Jobs\CreateContactFromShortMessage;
+use Illuminate\Queue\InteractsWithQueue;
+use App\Events\ShortMessageWasRecorded;
+
 
 class Contact
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+    use DispatchesJobs;
 
     /**
      * Handle the event.
@@ -26,6 +21,8 @@ class Contact
      */
     public function handle(ShortMessageWasRecorded $event)
     {
-        //
+        $job = new CreateContactFromShortMessage($event->shortMessage);
+
+        $this->dispatch($job);
     }
 }

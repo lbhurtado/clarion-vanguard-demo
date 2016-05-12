@@ -6,12 +6,25 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Events\ShortMessageWasRecorded;
-use App\Jobs\JoinGroup;
+use App\Repositories\GroupRepository;
+use App\Jobs\BroadcastToGroup;
 use App\Instruction;
 
-class GroupMembership
+class BroadcastRequest
 {
     use DispatchesJobs;
+
+    private $groups;
+
+    /**
+     * BroadcastRequest constructor.
+     * @param $groups
+     */
+    public function __construct(GroupRepository $groups)
+    {
+        $this->groups = $groups->skipPresenter();
+    }
+
 
     /**
      * Handle the event.
@@ -24,15 +37,14 @@ class GroupMembership
         $instruction = $event->shortMessage->getInstruction();
 
         if ($instruction->isValid())
-        {
             switch ($instruction->getKeyword())
             {
-                case strtoupper(Instruction::$keywords['REGISTRATION']):
-                    $job = new JoinGroup($instruction->getKeyword(), $event->shortMessage->mobile, $instruction->getArguments());
+                case strtoupper(Instruction::$keywords['Brothers']):
+                    $group = $this->groups->findByField('name', 'brods')->first();
+                    $message = $event->shortMessage->getInstruction()->getArguments();
+                    $job = new BroadcastToGroup($group, $message);
                     $this->dispatch($job);
                     break;
             }
-        }
-
     }
 }
