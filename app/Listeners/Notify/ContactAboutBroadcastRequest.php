@@ -20,8 +20,9 @@ class ContactAboutBroadcastRequest
      */
     public function handle(BroadcastWasRequested $event)
     {
-        $message = "Your message '{$event->message}' to group '{$event->group->name}' is pending.";
-        $job = new SendShortMessage($event->origin, $message);
+        $message = substr($event->message,0,14);
+        $msg = "Your message '{$message}...' to group '{$event->group->name}' is pending.";
+        $job = new SendShortMessage($event->origin, $msg);
 
         $this->dispatch($job);
     }

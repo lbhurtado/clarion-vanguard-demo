@@ -61,7 +61,7 @@ class ToOthersAboutBroadcastRequest
         $origin = Mobile::national($origin);
         $message = substr($message, 0, 14);
         $msg  = "$handle ($origin)\n";
-        $msg .= "msg: {$message}\n";
+        $msg .= "msg: {$message}...\n";
         $msg .= "grp: {$group->name}[{$number_of_pendings}]\n";
         $msg .= "otp: {$token} to 09229990758";
 
