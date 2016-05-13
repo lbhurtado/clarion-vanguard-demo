@@ -28,8 +28,11 @@ class CreateContactFromShortMessage extends Job implements ShouldQueue
      */
     public function handle(ContactRepository $contacts)
     {
-        $mobile = $this->shortMessage->mobile;
+        if ($this->shortMessage)
+        {
+            $mobile = $this->shortMessage->mobile;
 
-        $contacts->updateOrCreate(compact('mobile'), $this->shortMessage->attributesToArray());
+            $contacts->updateOrCreate(compact('mobile'), $this->shortMessage->attributesToArray());
+        }
     }
 }
