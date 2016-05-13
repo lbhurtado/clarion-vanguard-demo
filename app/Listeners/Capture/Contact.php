@@ -25,7 +25,7 @@ class Contact
         {
             $job = new CreateContactFromShortMessage($event->shortMessage);
 
-            $this->dispatch($job);
+            $this->dispatchNow($job);
         }
     }
 }
