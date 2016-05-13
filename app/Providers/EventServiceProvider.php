@@ -17,28 +17,28 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Capture\Contact::class,
             \App\Listeners\Capture\GroupMembership::class,
             \App\Listeners\Capture\BroadcastRequest::class,
-            'App\Listeners\Capture\BroadcastApproved',
+            \App\Listeners\Capture\BroadcastApproved::class,
         ],
-        \App\Events\ContactWasCreated::class => [
-            'App\Listeners\Notify\ContactAboutContactCreation',
-            'App\Listeners\Relay\ToOthersAboutContactCreation',
-        ],
+//        \App\Events\ContactWasCreated::class => [
+//            'App\Listeners\Notify\ContactAboutContactCreation',
+//            'App\Listeners\Relay\ToOthersAboutContactCreation',
+//        ],
         \App\Events\GroupMembershipsWereProcessed::class => [
             \App\Listeners\Notify\ContactAboutGroupMembershipProcessing::class,
-            'App\Listeners\Relay\ToOthersAboutGroupMembershipProcessing',
+//            '\App\Listeners\Relay\ToOthersAboutGroupMembershipProcessing',
         ],
         \App\Events\BroadcastWasRequested::class => [
             \App\Listeners\Notify\ContactAboutBroadcastRequest::class,
             \App\Listeners\Relay\ToOthersAboutBroadcastRequest::class,
         ],
-        \App\Events\BroadcastWasApproved::class => [
-            'App\Listeners\Notify\ContactAboutBroadcastApproval',
-            'App\Listeners\Relay\ToOthersAboutBroadcastApproval',
-        ],
-        'App\Events\BroadcastWasSent' => [
-            'App\Listeners\Notify\ContactAboutBroadcastSending',
-            'App\Listeners\Relay\ToOthersAboutBroadcastSending',
-        ],
+//        \App\Events\BroadcastWasApproved::class => [
+//            'App\Listeners\Notify\ContactAboutBroadcastApproval',
+//            'App\Listeners\Relay\ToOthersAboutBroadcastApproval',
+//        ],
+//        'App\Events\BroadcastWasSent' => [
+//            'App\Listeners\Notify\ContactAboutBroadcastSending',
+//            'App\Listeners\Relay\ToOthersAboutBroadcastSending',
+//        ],
     ];
 
     /**
