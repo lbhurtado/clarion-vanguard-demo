@@ -2,21 +2,14 @@
 
 namespace App\Listeners\Notify;
 
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\Events\GroupMembershipsWereProcessed;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class ContactAboutGroupMembershipProcessing
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+    use DispatchesJobs;
 
     /**
      * Handle the event.
@@ -26,6 +19,10 @@ class ContactAboutGroupMembershipProcessing
      */
     public function handle(GroupMembershipsWereProcessed $event)
     {
-        //
+        $mobile = $event->shortMessage->from;
+        $message = "Thank you.";
+        $job = new SendShortMessage($mobile, $message);
+
+        $this->dispatch($job);
     }
 }
