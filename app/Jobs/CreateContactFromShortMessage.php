@@ -9,10 +9,8 @@ use Illuminate\Queue\SerializesModels;
 use App\Entities\ShortMessage;
 use App\Jobs\Job;
 
-class CreateContactFromShortMessage extends Job implements ShouldQueue
+class CreateContactFromShortMessage extends Job
 {
-    use InteractsWithQueue, SerializesModels;
-
     private $shortMessage;
 
     /**
