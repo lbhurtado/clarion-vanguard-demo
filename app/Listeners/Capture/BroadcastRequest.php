@@ -40,7 +40,7 @@ class BroadcastRequest
             switch ($keyword)
             {
                 case strtoupper(Instruction::$keywords['All']):
-                    $group = $this->groups->findByField('name', 'brods')->first();
+                    $group = $this->groups->findByField('name', $keyword)->first();
                     $message = $event->shortMessage->getInstruction()->getArguments();
                     $origin = $event->shortMessage->mobile;
                     $this->groups->generatePendingMessages($group, $message, $origin);

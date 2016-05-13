@@ -33,9 +33,9 @@ class RequestBroadcast extends Job implements ShouldQueue
      */
     public function handle(ContactRepository $contacts)
     {
-        $mobile = env('MASTER');
-        $handle = $contacts->findByField('mobile', $this->origin)->first()->handle;
-        $message = "$handle ($mobile) is requesting to send the ff: msg. '{$this->message}' to the group '{$this->group->name}'. Send 1234 to approve.";
+//        $mobile = env('MASTER');
+//        $handle = $contacts->findByField('mobile', $this->origin)->first()->handle;
+//        $message = "$handle ($mobile) is requesting to send the ff: msg. '{$this->message}' to the group '{$this->group->name}'. Send 1234 to approve.";
 
 //        $job = new SendShortMessage($mobile, $message);
 //        $this->dispatch($job);

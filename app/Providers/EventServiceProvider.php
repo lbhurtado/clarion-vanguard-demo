@@ -31,7 +31,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Notify\ContactAboutBroadcastRequest::class,
             \App\Listeners\Relay\ToOthersAboutBroadcastRequest::class,
         ],
-        'App\Events\BroadcastWasApproved' => [
+        \App\Events\BroadcastWasApproved::class => [
             'App\Listeners\Notify\ContactAboutBroadcastApproval',
             'App\Listeners\Relay\ToOthersAboutBroadcastApproval',
         ],
