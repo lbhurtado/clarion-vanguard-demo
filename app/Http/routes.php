@@ -16,3 +16,7 @@ Route::get('/', function () {
 });
 
 Route::post('sms/{from}/{to}/{message}', 'SMSController@sms');
+
+Route::post('sun', 'SMSController@sun');
+
+Route::post('broadcast', 'SMSController@broadcast');

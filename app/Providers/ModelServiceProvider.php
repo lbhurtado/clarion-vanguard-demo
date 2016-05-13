@@ -7,6 +7,7 @@ use App\Events\ShortMessageWasRecorded;
 use App\Events\ContactWasCreated;
 use App\Entities\ShortMessage;
 use App\Entities\Contact;
+use App\Entities\Pending;
 use App\Mobile;
 
 class ModelServiceProvider extends ServiceProvider
@@ -36,6 +37,11 @@ class ModelServiceProvider extends ServiceProvider
 
         Contact::created(function ($model) {
             event(new ContactWasCreated($model));
+        });
+
+        Pending::creating(function ($model) {
+            $model->from = Mobile::number($model->from);
+            $model->to   = Mobile::number($model->to);
         });
     }
 

@@ -2,21 +2,15 @@
 
 namespace App\Listeners\Notify;
 
-use App\Events\BroadcastWasRequested;
-use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use App\Events\BroadcastWasRequested;
+use App\Jobs\SendShortMessage;
 
 class ContactAboutBroadcastRequest
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
+    use DispatchesJobs;
 
     /**
      * Handle the event.
@@ -26,6 +20,9 @@ class ContactAboutBroadcastRequest
      */
     public function handle(BroadcastWasRequested $event)
     {
-        //
+        $message = "Your message {$event->message} to group {$event->group->name} is pending.";
+        $job = new SendShortMessage($event->origin, $message);
+
+        $this->dispatch($job);
     }
 }

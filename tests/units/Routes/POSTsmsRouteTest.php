@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use App\Repositories\ShortMessageRepository;
 use App\Repositories\ContactRepository;
+use App\Repositories\PendingRepository;
 use App\Mobile;
 
 class POSTsmsRouteTest extends TestCase
@@ -69,7 +70,7 @@ class POSTsmsRouteTest extends TestCase
     }
 
     /** @test */
-    public function POST_sms_sends_broadcast()
+    public function POST_sms_sends_broadcast_from_mobile()
     {
         $this->artisan('db:seed');
         $route = "sms/09173011987/09189362340/vanguard Lester Hurtado '91";
@@ -82,9 +83,23 @@ class POSTsmsRouteTest extends TestCase
 
         $this->assertResponseOk();
 
-        $route = "sms/09189362340/09173011987/brods, Hello World!";
+        $route = "sms/09173011987/09189362340/brods All hail to thee, Vanguard Fraternity";
         $this->call('POST', $route);
 
         $this->assertResponseOk();
+        $pendings = $this->app->make(PendingRepository::class)->skipPresenter();
+        $this->assertCount(2, $pendings->all());
+
+        $route = "sms/09173011987/09189362340/APPROVE 1234";
+        $this->call('POST', $route);
+
+        $this->assertResponseOk();
+
+        $this->assertCount(0, $pendings->all());
+    }
+    /** @test */
+    public function POST_sms_sends_broadcast_from_file()
+    {
+
     }
 }

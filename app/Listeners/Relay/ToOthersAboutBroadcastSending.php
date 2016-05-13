@@ -2,22 +2,12 @@
 
 namespace App\Listeners\Relay;
 
-use App\Events\BroadcastWasSent;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
+use App\Events\BroadcastWasSent;
 
 class ToOthersAboutBroadcastSending
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Handle the event.
      *
@@ -28,4 +18,6 @@ class ToOthersAboutBroadcastSending
     {
         //
     }
+
+
 }

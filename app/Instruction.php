@@ -10,7 +10,8 @@ class Instruction
         'Board of Governors' => 'bog',
         'Secretariat' => 'secretariat',
         'Executive' => 'executive',
-        'REGISTRATION' => 'vanguard'
+        'REGISTRATION' => 'vanguard',
+        'APPROVE' => 'approve'
     ];
 
     protected $short_message;

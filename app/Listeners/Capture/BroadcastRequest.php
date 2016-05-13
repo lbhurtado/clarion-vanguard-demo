@@ -6,9 +6,9 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Events\ShortMessageWasRecorded;
+use App\Repositories\ContactRepository;
 use App\Repositories\GroupRepository;
-use App\Jobs\BroadcastToGroup;
-use App\Jobs\RequestBroadcast;
+use App\Jobs\SendShortMessage;
 use App\Instruction;
 
 class BroadcastRequest
@@ -18,14 +18,12 @@ class BroadcastRequest
     private $groups;
 
     /**
-     * BroadcastRequest constructor.
-     * @param $groups
+     * @param GroupRepository $groups
      */
     public function __construct(GroupRepository $groups)
     {
         $this->groups = $groups->skipPresenter();
     }
-
 
     /**
      * Handle the event.
@@ -45,10 +43,8 @@ class BroadcastRequest
                     $group = $this->groups->findByField('name', 'brods')->first();
                     $message = $event->shortMessage->getInstruction()->getArguments();
                     $origin = $event->shortMessage->mobile;
-                    $job = new RequestBroadcast($group, $message, $origin);
-                    $this->dispatch($job);
-//                    $job = new BroadcastToGroup($group, $message);
-//                    $this->dispatch($job);
+                    $this->groups->generatePendingMessages($group, $message, $origin);
+
                     break;
             }
         }
