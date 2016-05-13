@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Repositories\ShortMessageRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
@@ -36,6 +37,12 @@ class SendShortMessage extends Job implements ShouldQueue
     {
         SMS::send($this->message, [], function($sms) {
             $sms->to($this->mobile);
+            \App::make(ShortMessageRepository::class)->skipPresenter()->create([
+                'from'      => '09178251991',
+                'to'        => $this->mobile,
+                'message'   => $this->message,
+                'direction' => OUTGOING
+            ]);
         });
     }
 }
