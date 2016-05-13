@@ -38,7 +38,7 @@ class SendShortMessage extends Job implements ShouldQueue
     {
         $mobile = Mobile::national($this->mobile);
         SMS::send($this->message, [], function($sms) use ($mobile) {
-            $sms->to();
+            $sms->to($mobile);
             \App::make(ShortMessageRepository::class)->skipPresenter()->create([
                 'from'      => '09178251991',
                 'to'        => $mobile,
