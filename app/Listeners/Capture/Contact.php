@@ -21,8 +21,11 @@ class Contact
      */
     public function handle(ShortMessageWasRecorded $event)
     {
-        $job = new CreateContactFromShortMessage($event->shortMessage);
+        if ($event->shortMessage)
+        {
+            $job = new CreateContactFromShortMessage($event->shortMessage);
 
-        $this->dispatch($job);
+            $this->dispatch($job);
+        }
     }
 }

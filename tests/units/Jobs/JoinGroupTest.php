@@ -4,7 +4,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use App\Jobs\CreateContactFromShortMessage;
 use App\Repositories\ContactRepository;
 use App\Repositories\GroupRepository;
 use App\Entities\ShortMessage;
