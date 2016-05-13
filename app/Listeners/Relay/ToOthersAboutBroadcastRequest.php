@@ -2,6 +2,7 @@
 
 namespace App\Listeners\Relay;
 
+use App\Mobile;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -57,8 +58,13 @@ class ToOthersAboutBroadcastRequest
 //        dd($this->contacts->findByField('mobile', $origin)->first());
         $handle = $this->contacts->findByField('mobile', $origin)->first()->handle;
         $number_of_pendings = count($this->pendings->getByCriteria(new TokenCriterion($token))->all());
-        $message = "$handle ($origin) is requesting to send the ff: msg. '{$message}' to the group '{$group->name}'[{$number_of_pendings}]. Send 'APPROVE {$token}' to 09229990758 allow this broadcast.";
+        $origin = Mobile::national($origin);
+        $message = substr($message, 0, 14);
+        $msg  = "$handle ($origin)\n";
+        $msg .= "msg: {$message}\n";
+        $msg .= "grp: {$group->name}[{$number_of_pendings}]\n";
+        $msg .= "otp: {$token} to 09229990758";
 
-        return array($mobile, $message);
+        return array($mobile, $msg);
     }
 }
