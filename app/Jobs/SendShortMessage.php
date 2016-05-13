@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use SimpleSoftwareIO\SMS\Facades\SMS;
 use App\Jobs\Job;
+use App\Mobile;
 
 class SendShortMessage extends Job implements ShouldQueue
 {
@@ -35,11 +36,12 @@ class SendShortMessage extends Job implements ShouldQueue
      */
     public function handle()
     {
-        SMS::send($this->message, [], function($sms) {
-            $sms->to($this->mobile);
+        $mobile = Mobile::national($this->mobile);
+        SMS::send($this->message, [], function($sms) use ($mobile) {
+            $sms->to();
             \App::make(ShortMessageRepository::class)->skipPresenter()->create([
                 'from'      => '09178251991',
-                'to'        => $this->mobile,
+                'to'        => $mobile,
                 'message'   => $this->message,
                 'direction' => OUTGOING
             ]);
