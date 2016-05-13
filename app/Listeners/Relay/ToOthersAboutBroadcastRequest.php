@@ -57,7 +57,7 @@ class ToOthersAboutBroadcastRequest
 //        dd($this->contacts->findByField('mobile', $origin)->first());
         $handle = $this->contacts->findByField('mobile', $origin)->first()->handle;
         $number_of_pendings = count($this->pendings->getByCriteria(new TokenCriterion($token))->all());
-        $message = "$handle ($mobile) is requesting to send the ff: msg. '{$message}' to the group '{$group->name}'[{$number_of_pendings}]. Send 'APPROVE {$token}' to allow the broadcast.";
+        $message = "$handle ($mobile) is requesting to send the ff: msg. '{$message}' to the group '{$group->name}'[{$number_of_pendings}]. Send 'APPROVE {$token}' to 09229990758 allow this broadcast.";
 
         return array($mobile, $message);
     }
