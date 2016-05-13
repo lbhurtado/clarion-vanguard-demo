@@ -8,6 +8,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use App\Events\ShortMessageWasRecorded;
 use App\Repositories\GroupRepository;
 use App\Jobs\BroadcastToGroup;
+use App\Jobs\RequestBroadcast;
 use App\Instruction;
 
 class BroadcastRequest
@@ -36,15 +37,20 @@ class BroadcastRequest
     {
         $instruction = $event->shortMessage->getInstruction();
 
-        if ($instruction->isValid())
-            switch ($instruction->getKeyword())
+        if ($instruction->isValid()) {
+            $keyword = $instruction->getKeyword();
+            switch ($keyword)
             {
-                case strtoupper(Instruction::$keywords['Brothers']):
+                case strtoupper(Instruction::$keywords['All']):
                     $group = $this->groups->findByField('name', 'brods')->first();
                     $message = $event->shortMessage->getInstruction()->getArguments();
-                    $job = new BroadcastToGroup($group, $message);
+                    $origin = $event->shortMessage->mobile;
+                    $job = new RequestBroadcast($group, $message, $origin);
                     $this->dispatch($job);
+//                    $job = new BroadcastToGroup($group, $message);
+//                    $this->dispatch($job);
                     break;
             }
+        }
     }
 }

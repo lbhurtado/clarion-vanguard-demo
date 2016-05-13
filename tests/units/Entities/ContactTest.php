@@ -23,6 +23,15 @@ class ContactTest extends TestCase
         $this->assertEquals(Mobile::number('09189362340'), $contact->handle);
     }
 
+
+    /** @test */
+    function contact_has_unique_mobile_field()
+    {
+        $this->setExpectedException(Illuminate\Database\QueryException::class);
+        factory(Contact::class)->create(['mobile' => '09173011987']);
+        factory(Contact::class)->create(['mobile' => '09173011987']);
+    }
+
     /** @test */
     function contact_has_a_factory()
     {

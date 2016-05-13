@@ -6,7 +6,7 @@ use App\Entities\ShortMessage;
 class Instruction
 {
     public static $keywords = [
-        'Brothers' => 'brods',
+        'All' => 'brods',
         'Board of Governors' => 'bog',
         'Secretariat' => 'secretariat',
         'Executive' => 'executive',

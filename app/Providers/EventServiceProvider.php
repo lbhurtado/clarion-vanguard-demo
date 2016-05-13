@@ -26,7 +26,7 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\Notify\ContactAboutGroupMembershipProcessing',
             'App\Listeners\Relay\ToOthersAboutGroupMembershipProcessing',
         ],
-        'App\Events\BroadcastWasRequested' => [
+        \App\Events\BroadcastWasRequested::class => [
             'App\Listeners\Notify\ContactAboutBroadcastRequest',
             'App\Listeners\Relay\ToOthersAboutBroadcastRequest',
         ],
