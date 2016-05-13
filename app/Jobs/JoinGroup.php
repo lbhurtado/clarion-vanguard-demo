@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\GroupMembershipsWereProcessed;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Repositories\ContactRepository;
@@ -17,6 +18,7 @@ class JoinGroup extends Job implements ShouldQueue
     private $group_name;
     private $mobile;
     private $handle;
+    private $new_handle = false;
 
     /**
      * JoinGroup constructor.
@@ -66,8 +68,12 @@ class JoinGroup extends Job implements ShouldQueue
     protected function updateHandle($prospect)
     {
         if (!is_null($this->handle)) {
-            $prospect->handle = $this->handle;
-            $prospect->save();
+            if ($prospect->handle != $this->handle)
+            {
+                $prospect->handle = $this->handle;
+                $prospect->save();
+                $this->new_handle = true;
+            }
         }
     }
 
@@ -81,6 +87,11 @@ class JoinGroup extends Job implements ShouldQueue
         if (is_null($contact)) {
             $brod_group->contacts()->attach($prospect);
             $brod_group->save();
+            event(new GroupMembershipsWereProcessed($brod_group, $prospect, true));
+        }
+        elseif ($this->new_handle)
+        {
+            event(new GroupMembershipsWereProcessed($brod_group, $prospect, false));
         }
     }
 }
