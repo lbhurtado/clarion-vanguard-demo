@@ -49,7 +49,7 @@ class GroupRepositoryEloquent extends BaseRepository implements GroupRepository
     public function generatePendingMessages(Group $group, $message, $origin)
     {
         $pendings = \App::make(PendingRepository::class)->skipPresenter();
-        $token = "1234"; //mt_rand(1000, 9999);
+        $token = mt_rand(1000, 9999);
         foreach($group->contacts as $contact)
         {
             $pendings->create([
