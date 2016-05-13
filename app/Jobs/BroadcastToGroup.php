@@ -10,9 +10,9 @@ use App\Jobs\SendShortMessage;
 use App\Entities\Group;
 use App\Jobs\Job;
 
-class BroadcastToGroup extends Job implements ShouldQueue
+class BroadcastToGroup extends Job
 {
-    use InteractsWithQueue, SerializesModels, DispatchesJobs;
+    use DispatchesJobs;
 
     private $group;
 

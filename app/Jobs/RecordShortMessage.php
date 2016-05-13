@@ -7,10 +7,8 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class RecordShortMessage extends Job implements ShouldQueue
+class RecordShortMessage extends Job
 {
-    use InteractsWithQueue, SerializesModels;
-
     private $from;
 
     private $to;

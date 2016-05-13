@@ -11,10 +11,8 @@ use App\Repositories\GroupRepository;
 use App\Jobs\Job;
 use App\Mobile;
 
-class JoinGroup extends Job implements ShouldQueue
+class JoinGroup extends Job
 {
-    use InteractsWithQueue, SerializesModels;
-
     private $group_name;
     private $mobile;
     private $handle;

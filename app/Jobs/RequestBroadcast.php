@@ -11,9 +11,9 @@ use App\Jobs\SendShortMessage;
 use App\Entities\Group;
 use App\Jobs\Job;
 
-class RequestBroadcast extends Job implements ShouldQueue
+class RequestBroadcast extends Job
 {
-    use InteractsWithQueue, SerializesModels, DispatchesJobs;
+    use DispatchesJobs;
 
     private $group;
 
