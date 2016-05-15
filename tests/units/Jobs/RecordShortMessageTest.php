@@ -37,4 +37,15 @@ class RecordShortMessageTest extends TestCase
             'direction' => INCOMING
         ]);
     }
+
+    /** @test */
+    function record_short_message_respects_the_blacklist()
+    {
+        $this->setExpectedException(\Exception::class);
+
+        list($from, $to, $message, $direction) = ['09171234567', '09189362340', 'The quick brown fox...', INCOMING];
+
+        $job = new RecordShortMessage($from, $to, $message, $direction);
+        $this->dispatch($job);
+    }
 }
