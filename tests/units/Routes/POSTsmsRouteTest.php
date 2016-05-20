@@ -83,23 +83,18 @@ class POSTsmsRouteTest extends TestCase
 
         $this->assertResponseOk();
 
-        $route = "sms/09173011987/09189362340/brods All hail to thee, Vanguard Fraternity";
-        $this->call('POST', $route);
-
-        $this->assertResponseOk();
-        $pendings = $this->app->make(PendingRepository::class)->skipPresenter();
-        $this->assertCount(2, $pendings->all());
-
-        $route = "sms/09173011987/09189362340/APPROVE 1234";
-        $this->call('POST', $route);
-
-        $this->assertResponseOk();
-
-        $this->assertCount(0, $pendings->all());
-    }
-    /** @test */
-    public function POST_sms_sends_broadcast_from_file()
-    {
-
+//        $route = "sms/09173011987/09189362340/brods All hail to thee, Vanguard Fraternity";
+//        $this->call('POST', $route);
+//
+//        $this->assertResponseOk();
+//        $pendings = $this->app->make(PendingRepository::class)->skipPresenter();
+//        $this->assertCount(2, $pendings->all());
+//
+//        $route = "sms/09173011987/09189362340/APPROVE 1234";
+//        $this->call('POST', $route);
+//
+//        $this->assertResponseOk();
+//
+//        $this->assertCount(0, $pendings->all());
     }
 }

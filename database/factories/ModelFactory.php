@@ -41,3 +41,9 @@ $factory->define(App\Entities\ShortMessage::class, function (Faker\Generator $fa
         'message' => $faker->sentence,
     ];
 });
+
+$factory->define(App\Entities\BlacklistedNumber::class, function (Faker\Generator $faker) {
+    return [
+        'mobile' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+    ];
+});

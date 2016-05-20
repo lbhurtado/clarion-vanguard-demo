@@ -19,6 +19,11 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Capture\BroadcastRequest::class,
             \App\Listeners\Capture\BroadcastApproved::class,
         ],
+        'App\Events\BlacklistedNumberDetected' => [
+            'App\Listeners\Validate\ActionAboutBlacklistedNumberDetection',
+            'App\Listeners\Notify\ContactAboutBlacklistedNumberDetection',
+            'App\Listeners\Relay\ToOthersAboutBlacklistedNumberDetection',
+        ],
 //        \App\Events\ContactWasCreated::class => [
 //            'App\Listeners\Notify\ContactAboutContactCreation',
 //            'App\Listeners\Relay\ToOthersAboutContactCreation',

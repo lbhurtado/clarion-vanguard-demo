@@ -5,14 +5,14 @@ namespace App\Validators;
 use \Prettus\Validator\Contracts\ValidatorInterface;
 use \Prettus\Validator\LaravelValidator;
 
-class ShortMessageValidator extends LaravelValidator {
+class BlacklistedNumberValidator extends LaravelValidator {
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-            'message'	=> 'required',
+            'mobile'	=> 'required',
         ],
         ValidatorInterface::RULE_UPDATE => [
-            'message'	=> 'required',
+            'mobile'	=> 'required',
         ],
    ];
 

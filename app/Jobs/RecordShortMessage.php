@@ -4,9 +4,11 @@ namespace App\Jobs;
 
 use App\Repositories\ShortMessageRepository;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Events\BlacklistedNumberDetected;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use League\Csv\Reader;
+use App\Mobile;
 
 class RecordShortMessage extends Job
 {
@@ -39,22 +41,20 @@ class RecordShortMessage extends Job
 
     /**
      * Execute the job.
-     * @param ShortMessageRepository $shortMessageRepository
+     * @param ShortMessageRepository $short_messages
      */
-    public function handle(ShortMessageRepository $shortMessageRepository)
+    public function handle(ShortMessageRepository $short_messages)
     {
         $from = $this->from;
         $to = $this->to;
         $message = $this->message;
         $direction = $this->direction;
+        $attributes = compact('from', 'to', 'message', 'direction');
 
-        $numbers = $this->getBlackList();
-
-        if (in_array($from, $numbers))
-        {
-            throw new \Exception('test');
-        }
-        $shortMessageRepository->create(compact('from', 'to', 'message', 'direction'));
+        $short_messages->create($attributes);
+//        in_array($from, Mobile::blacklist())
+//            ? event(new BlacklistedNumberDetected($attributes))
+//            : $short_messages->create($attributes);
     }
 
     /**
