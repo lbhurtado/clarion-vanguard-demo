@@ -4,18 +4,18 @@ namespace App\Repositories;
 
 use Prettus\Repository\Contracts\CacheableInterface;
 use Prettus\Repository\Traits\CacheableRepository;
-use App\Repositories\BlacklistedNumberRepository;
+use App\Repositories\WhitelistedNumberRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
-use App\Validators\BlacklistedNumberValidator;
-use App\Entities\BlacklistedNumber;
+use App\Validators\WhitelistedNumberValidator;
+use App\Entities\WhitelistedNumber;
 use App\Criteria\MobileCriterion;
 
 /**
- * Class BlacklistedNumberRepositoryEloquent
+ * Class WhitelistedNumberRepositoryEloquent
  * @package namespace App\Repositories;
  */
-class BlacklistedNumberRepositoryEloquent extends BaseRepository implements BlacklistedNumberRepository, CacheableInterface
+class WhitelistedNumberRepositoryEloquent extends BaseRepository implements WhitelistedNumberRepository, CacheableInterface
 {
     use CacheableRepository;
 
@@ -26,7 +26,7 @@ class BlacklistedNumberRepositoryEloquent extends BaseRepository implements Blac
      */
     public function model()
     {
-        return BlacklistedNumber::class;
+        return WhitelistedNumber::class;
     }
 
     /**
@@ -37,7 +37,7 @@ class BlacklistedNumberRepositoryEloquent extends BaseRepository implements Blac
     public function validator()
     {
 
-        return BlacklistedNumberValidator::class;
+        return WhitelistedNumberValidator::class;
     }
 
 
@@ -50,11 +50,19 @@ class BlacklistedNumberRepositoryEloquent extends BaseRepository implements Blac
     }
 
     /**
-     * @param $mobile
      * @return boolean
      */
-    public function positive($mobile)
+    public function enabled()
     {
-        return $this->getByCriteria(new MobileCriterion($mobile))->count() > 0;
+        return $this->paginate(1, ['mobile'])->count() > 0;
+    }
+
+    /**
+     * @param $mobile
+     * @return mixed
+     */
+    public function negative($mobile)
+    {
+        return $this->getByCriteria(new MobileCriterion($mobile))->count() == 0;
     }
 }

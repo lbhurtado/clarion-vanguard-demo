@@ -11,6 +11,6 @@ class ActionAboutBlacklistedNumberDetection
 {
     public function handle(BlacklistedNumberDetected $event)
     {
-        throw new BlacklistedNumberException("Blacklisted number {$event->attributes['from']}");
+        throw new BlacklistedNumberException("Blacklisted number {$event->attributes['from']}!");
     }
 }

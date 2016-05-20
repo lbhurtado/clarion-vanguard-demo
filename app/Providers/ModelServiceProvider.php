@@ -2,11 +2,12 @@
 
 namespace App\Providers;
 
-use App\Repositories\BlacklistedNumberRepository;
+use App\Events\WhitelistedNumberNotDetected;
 use App\Events\BlacklistedNumberDetected;
 use Illuminate\Support\ServiceProvider;
 use App\Events\ShortMessageWasRecorded;
 use App\Entities\BlacklistedNumber;
+use App\Entities\WhitelistedNumber;
 use App\Events\ContactWasCreated;
 use App\Entities\ShortMessage;
 use App\Entities\Contact;
@@ -29,7 +30,10 @@ class ModelServiceProvider extends ServiceProvider
             $model->from = Mobile::number($model->from);
             $model->to   = Mobile::number($model->to);
 
-//            if ($this->numberIsBlacklisted($model->mobile))
+            if (WhitelistedNumber::enabled())
+                if (WhitelistedNumber::negative($model->mobile))
+                    event(new WhitelistedNumberNotDetected($model->attributes));
+
             if (BlacklistedNumber::positive($model->mobile))
                 event(new BlacklistedNumberDetected($model->attributes));
         });
@@ -55,6 +59,10 @@ class ModelServiceProvider extends ServiceProvider
         BlacklistedNumber::creating(function($model){
             $model->mobile = Mobile::number($model->mobile);
         });
+
+        WhitelistedNumber::creating(function($model){
+            $model->mobile = Mobile::number($model->mobile);
+        });
     }
 
     /**
@@ -65,12 +73,5 @@ class ModelServiceProvider extends ServiceProvider
     public function register()
     {
         //
-    }
-
-    private function numberIsBlacklisted($mobile)
-    {
-        $blacklisted_numbers = $this->app->make(BlacklistedNumberRepository::class);
-
-        return $blacklisted_numbers->check($mobile);
     }
 }

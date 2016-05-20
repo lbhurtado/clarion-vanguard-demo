@@ -6,7 +6,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Queue\SerializesModels;
 use App\Events\Event;
 
-class BlacklistedNumberDetected extends Event
+class WhitelistedNumberNotDetected extends Event
 {
     use SerializesModels;
 

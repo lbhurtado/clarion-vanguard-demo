@@ -47,3 +47,9 @@ $factory->define(App\Entities\BlacklistedNumber::class, function (Faker\Generato
         'mobile' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
     ];
 });
+
+$factory->define(App\Entities\WhitelistedNumber::class, function (Faker\Generator $faker) {
+    return [
+        'mobile' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+    ];
+});

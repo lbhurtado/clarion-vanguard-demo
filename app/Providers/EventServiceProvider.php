@@ -24,6 +24,11 @@ class EventServiceProvider extends ServiceProvider
             'App\Listeners\Notify\ContactAboutBlacklistedNumberDetection',
             'App\Listeners\Relay\ToOthersAboutBlacklistedNumberDetection',
         ],
+        'App\Events\WhitelistedNumberNotDetected' => [
+            'App\Listeners\Validate\ActionAboutWhitelistedNumberNonDetection',
+            'App\Listeners\Notify\ContactAboutWhitelistedNumberNonDetection',
+            'App\Listeners\Relay\ToOthersAboutWhitelistedNumberNonDetection',
+        ],
 //        \App\Events\ContactWasCreated::class => [
 //            'App\Listeners\Notify\ContactAboutContactCreation',
 //            'App\Listeners\Relay\ToOthersAboutContactCreation',
