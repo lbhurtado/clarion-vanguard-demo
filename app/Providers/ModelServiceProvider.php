@@ -12,8 +12,8 @@ use App\Events\ContactWasCreated;
 use App\Entities\ShortMessage;
 use App\Entities\Contact;
 use App\Entities\Pending;
+use App\Entities\Group;
 use App\Mobile;
-//use App\Entities\BlacklistedNumber;
 
 class ModelServiceProvider extends ServiceProvider
 {
@@ -49,6 +49,16 @@ class ModelServiceProvider extends ServiceProvider
 
         Contact::created(function ($model) {
             event(new ContactWasCreated($model));
+        });
+
+        Group::creating(function ($model) {
+            $model->alias = $model->alias ?: $model->name;
+            $model->alias = strtolower($model->alias);
+        });
+
+        Group::updating(function ($model) {
+            $model->alias = $model->alias ?: $model->name;
+            $model->alias = strtolower($model->alias);
         });
 
         Pending::creating(function ($model) {

@@ -18,6 +18,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Capture\GroupMembership::class,
             \App\Listeners\Capture\BroadcastRequest::class,
             \App\Listeners\Capture\BroadcastApproved::class,
+            'App\Listeners\Capture\Instruction',
         ],
         'App\Events\BlacklistedNumberDetected' => [
             'App\Listeners\Validate\ActionAboutBlacklistedNumberDetection',

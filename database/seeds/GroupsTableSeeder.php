@@ -19,9 +19,9 @@ class GroupsTableSeeder extends Seeder
         $groups = [];
         foreach ($reader as $index => $row)
         {
-            $groups [] = array(
-                'name' => $row[0],
-            );
+            $name = $row[0];
+            $alias = strtolower(isset($row[1]) ?: $row[0]);
+            $groups [] = compact('name', 'alias');
         }
 
         DB::table('groups')->insert($groups);

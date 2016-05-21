@@ -9,11 +9,11 @@ class GroupValidator extends LaravelValidator {
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-		'name'	=>'	required',
-	],
+            'name'	=> 'required',
+        ],
         ValidatorInterface::RULE_UPDATE => [
-		'name'	=>'	required',
-	],
+            'name'	=> 'required',
+        ],
    ];
 
 }

@@ -46,6 +46,11 @@ class GroupRepositoryEloquent extends BaseRepository implements GroupRepository
         $this->pushCriteria(app(RequestCriteria::class));
     }
 
+    public function findByAlias($alias, $columns = ['*'])
+    {
+        return $this->findByField('alias', strtolower($alias), $columns);
+    }
+
     public function generatePendingMessages(Group $group, $message, $origin)
     {
         $pendings = \App::make(PendingRepository::class)->skipPresenter();

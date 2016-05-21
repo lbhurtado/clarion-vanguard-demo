@@ -13,5 +13,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(GroupsTableSeeder::class);
         $this->call(BlacklistedNumbersTableSeeder::class);
+        $this->call(WhitelistedNumbersTableSeeder::class);
     }
 }
