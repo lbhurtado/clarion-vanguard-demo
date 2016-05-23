@@ -22,8 +22,10 @@ $factory->define(App\User::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Entities\Group::class, function (Faker\Generator $faker) {
+    $name = $faker->company;
     return [
-        'name' => $faker->company
+        'name' => $name,
+        'alias' => strtolower($name)
     ];
 });
 

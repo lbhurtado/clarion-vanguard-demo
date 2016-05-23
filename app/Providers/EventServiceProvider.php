@@ -16,8 +16,8 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\ShortMessageWasRecorded::class => [
             \App\Listeners\Capture\Contact::class,
             \App\Listeners\Capture\GroupMembership::class,
-            \App\Listeners\Capture\BroadcastRequest::class,
-            \App\Listeners\Capture\BroadcastApproved::class,
+//            \App\Listeners\Capture\BroadcastRequest::class,
+//            \App\Listeners\Capture\BroadcastApproved::class,
             'App\Listeners\Capture\Instruction',
         ],
         'App\Events\BlacklistedNumberDetected' => [

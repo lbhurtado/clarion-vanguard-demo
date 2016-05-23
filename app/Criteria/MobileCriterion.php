@@ -10,6 +10,7 @@ namespace App\Criteria;
 
 use Prettus\Repository\Contracts\RepositoryInterface;
 use Prettus\Repository\Contracts\CriteriaInterface;
+use App\Mobile;
 
 class MobileCriterion implements CriteriaInterface
 {
@@ -22,7 +23,7 @@ class MobileCriterion implements CriteriaInterface
      */
     public function __construct($mobile, $field = 'mobile')
     {
-        $this->mobile = $mobile;
+        $this->mobile = Mobile::number($mobile);
         $this->field = $field;
     }
 
