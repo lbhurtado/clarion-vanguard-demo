@@ -37,4 +37,28 @@ class RecordShortMessageTest extends TestCase
             'direction' => INCOMING
         ]);
     }
+
+    /** @test */
+    function record_short_message_creates_singleton_instance()
+    {
+        list($from, $to, $message, $direction) = ['09173011987', '09189362340', 'The quick brown fox...', INCOMING];
+
+        $job = new RecordShortMessage($from, $to, $message, $direction);
+        $this->dispatch($job);
+
+        $short_message = $this->app->make(ShortMessage::class);
+
+        $this->assertInstanceOf(ShortMessage::class,  $short_message);
+
+        $this->assertEquals(Mobile::number('09173011987'),  $short_message->from);
+        $this->assertEquals(Mobile::number('09189362340'),  $short_message->to);
+        $this->assertEquals('The quick brown fox...',       $short_message->message);
+        $this->assertEquals(INCOMING,                       $short_message->direction);
+        $this->seeInDatabase($short_message->getTable(), [
+            'from'      => Mobile::number('09173011987'),
+            'to'        => Mobile::number('09189362340'),
+            'message'   => "The quick brown fox...",
+            'direction' => INCOMING
+        ]);
+    }
 }

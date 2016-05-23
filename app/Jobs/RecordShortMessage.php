@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Repositories\ShortMessageRepository;
+use App\Entities\ShortMessage;
 
 class RecordShortMessage extends Job
 {
@@ -13,8 +14,6 @@ class RecordShortMessage extends Job
     private $message;
 
     private $direction;
-
-    private $reader;
 
     /**
      * RecordShortMessage constructor.
@@ -43,6 +42,7 @@ class RecordShortMessage extends Job
         $direction = $this->direction;
         $attributes = compact('from', 'to', 'message', 'direction');
 
-        $short_messages->create($attributes);
+        $short_message = $short_messages->create($attributes);
+        \App::instance(ShortMessage::class, $short_message);
     }
 }

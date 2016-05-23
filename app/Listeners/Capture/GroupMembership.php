@@ -13,6 +13,49 @@ class GroupMembership
 {
     use DispatchesJobs;
 
+    static protected $regex = "/(?<group_alias>[^\s]+)\s?(?<handle>.*)/i";
+
+    private $message;
+
+    private $mobile;
+
+    /**
+     * @return mixed
+     */
+    public function getInstruction()
+    {
+        return $this->instruction;
+    }
+
+    public function regexMatches(&$matches)
+    {
+        if (preg_match(static::$regex, $this->message, $matches))
+        {
+            foreach($matches as $k => $v)
+            {
+                if(is_int($k))
+                {
+                    unset($matches[$k]);
+                }
+            }
+            $matches = $this->insertMobile($matches);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $matches
+     * @return mixed
+     */
+    protected function insertMobile(&$matches)
+    {
+        $matches ['mobile'] = $this->mobile;
+        return $matches;
+    }
+
     /**
      * Handle the event.
      *
@@ -21,18 +64,29 @@ class GroupMembership
      */
     public function handle(ShortMessageWasRecorded $event)
     {
-        $instruction = $event->shortMessage->getInstruction();
+//        $this->instruction = $event->shortMessage->getInstruction();
+//
+//        $instruction = $event->shortMessage->getInstruction();
+//
+//        if ($instruction->isValid())
+//        {
+//            switch ($instruction->getKeyword())
+//            {
+//                case strtoupper(Instruction::$keywords['REGISTRATION']):
+//                    $job = new JoinGroup($instruction->getKeyword(), $event->shortMessage->mobile, $instruction->getArguments());
+//                    $this->dispatch($job);
+//                    break;
+//            }
+//        }
 
-        if ($instruction->isValid())
+        $this->message = $event->shortMessage->message;
+        $this->mobile = $event->shortMessage->mobile;
+        if ($this->regexMatches($attributes))
         {
-            switch ($instruction->getKeyword())
-            {
-                case strtoupper(Instruction::$keywords['REGISTRATION']):
-                    $job = new JoinGroup($instruction->getKeyword(), $event->shortMessage->mobile, $instruction->getArguments());
-                    $this->dispatch($job);
-                    break;
-            }
+            $job = new JoinGroup($attributes);
+            $this->dispatch($job);
         }
-
     }
+
+
 }

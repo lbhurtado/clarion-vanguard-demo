@@ -20,3 +20,12 @@ Route::post('sms/{from}/{to}/{message}', 'SMSController@sms');
 Route::post('sun', 'SMSController@sun');
 
 Route::post('broadcast', 'SMSController@broadcast');
+
+Route::group(['prefix' => 'txtcmdr'], function()
+{
+    Route::get('test', function ()    {
+        return "Test";
+    });
+
+    Route::post('group/{group}/{mobile}/{handle?}', 'TextCommanderController@joinGroup');
+});

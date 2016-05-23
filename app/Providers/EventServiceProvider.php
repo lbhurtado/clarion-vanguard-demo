@@ -34,10 +34,10 @@ class EventServiceProvider extends ServiceProvider
 //            'App\Listeners\Notify\ContactAboutContactCreation',
 //            'App\Listeners\Relay\ToOthersAboutContactCreation',
 //        ],
-        \App\Events\GroupMembershipsWereProcessed::class => [
-            \App\Listeners\Notify\ContactAboutGroupMembershipProcessing::class,
+//        \App\Events\GroupMembershipsWereProcessed::class => [
+//            \App\Listeners\Notify\ContactAboutGroupMembershipProcessing::class,
 //            '\App\Listeners\Relay\ToOthersAboutGroupMembershipProcessing',
-        ],
+//        ],
         \App\Events\BroadcastWasRequested::class => [
             \App\Listeners\Notify\ContactAboutBroadcastRequest::class,
             \App\Listeners\Relay\ToOthersAboutBroadcastRequest::class,

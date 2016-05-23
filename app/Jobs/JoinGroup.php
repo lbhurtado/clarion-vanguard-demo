@@ -13,22 +13,20 @@ use App\Mobile;
 
 class JoinGroup extends Job
 {
-    private $group_name;
+    private $group_alias;
     private $mobile;
     private $handle;
     private $new_handle = false;
 
     /**
      * JoinGroup constructor.
-     * @param $group_name
-     * @param $mobile
-     * @param $handle
+     * @param $attributes
      */
-    public function __construct($group_name, $mobile, $handle = null)
+    public function __construct($attributes)
     {
-        $this->group_name = $group_name;
-        $this->mobile = $mobile;
-        $this->handle = $handle;
+        foreach($attributes as $key => $value) {
+            $this->$key = $value;
+        }
     }
 
     /**
@@ -56,8 +54,9 @@ class JoinGroup extends Job
         $groups->skipPresenter();
         $mobile = Mobile::number($this->mobile);
         $prospect = $contacts->findByField('mobile', $mobile)->first();
-        $brod_group = $groups->findByField('name', 'brods')->first();
-        return array($prospect, $brod_group);
+        $group = $groups->findByField('name', $this->group_alias)->first();
+
+        return array($prospect, $group);
     }
 
     /**
@@ -76,20 +75,20 @@ class JoinGroup extends Job
     }
 
     /**
-     * @param $brod_group
+     * @param $group
      * @param $prospect
      */
-    protected function joinGroup($brod_group, $prospect)
+    protected function joinGroup($group, $prospect)
     {
-        $contact = $brod_group->contacts()->where('contact_id', $prospect->id)->first();
+        $contact = $group->contacts()->where('contact_id', $prospect->id)->first();
         if (is_null($contact)) {
-            $brod_group->contacts()->attach($prospect);
-            $brod_group->save();
-            event(new GroupMembershipsWereProcessed($brod_group, $prospect, true));
+            $group->contacts()->attach($prospect);
+            $group->save();
+            event(new GroupMembershipsWereProcessed($group, $prospect, true));
         }
         elseif ($this->new_handle)
         {
-            event(new GroupMembershipsWereProcessed($brod_group, $prospect, false));
+            event(new GroupMembershipsWereProcessed($group, $prospect, false));
         }
     }
 }

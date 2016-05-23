@@ -18,6 +18,42 @@ class JoinGroupTest extends TestCase
     /** @test */
     function join_group_does_the_job()
     {
+        $groups = $this->app->make(GroupRepository::class);
+        $contacts = $this->app->make(ContactRepository::class);
+        $name = $alias = 'vanguard';
+        $group = $groups->create(compact('name','alias'));
+        $mobile = '09173011987';
+        $contact = $contacts->create(['mobile' => $mobile, 'handle' => "Lester '92"]);
+
+        $this->assertCount(0, $groups->find($group->id)->contacts);
+
+        $attributes = [
+            'group_alias' => $group->alias,
+            'mobile' => $contact->mobile,
+            'handle' => $contact->handle,
+        ];
+
+        $job = new JoinGroup($attributes);
+        $this->dispatch($job);
+
+        $this->assertCount(1, $groups->find($group->id)->contacts);
+
+        $job = new JoinGroup($attributes);
+        $this->dispatch($job);
+
+        $this->assertCount(1, $groups->find($group->id)->contacts);
+
+        $this->assertEquals(Mobile::number('09173011987'), $group->contacts->first()->mobile);
+        $this->assertEquals("Lester '92", $group->contacts->first()->handle);
+        $this->seeInDatabase($group->contacts()->getTable(), [
+            'group_id' => $group->id,
+            'contact_id' => $contact->id
+        ]);
+    }
+
+    /** test */
+    function join_group_does_the_job_old()
+    {
         $this->artisan('db:seed');
 
         factory(ShortMessage::class)->create([
