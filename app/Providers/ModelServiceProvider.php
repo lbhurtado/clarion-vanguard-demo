@@ -39,6 +39,7 @@ class ModelServiceProvider extends ServiceProvider
         });
 
         ShortMessage::created(function ($model) {
+            $this->app->instance(ShortMessage::class, $model);
             event(new ShortMessageWasRecorded($model));
         });
 

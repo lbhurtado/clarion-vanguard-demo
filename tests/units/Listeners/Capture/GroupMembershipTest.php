@@ -26,9 +26,7 @@ class GroupMembershipTest extends TestCase
             'message'   => "vanguard Lester '92",
             'direction' => INCOMING
         ]);
-
         $listener = new GroupMembership();
-
         $listener->handle(new ShortMessageWasRecorded($short_message));
 
         $this->assertTrue($listener->regexMatches($attributes));

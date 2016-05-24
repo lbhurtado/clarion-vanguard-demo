@@ -42,7 +42,6 @@ class RecordShortMessage extends Job
         $direction = $this->direction;
         $attributes = compact('from', 'to', 'message', 'direction');
 
-        $short_message = $short_messages->create($attributes);
-        \App::instance(ShortMessage::class, $short_message);
+        $short_messages->create($attributes);
     }
 }
