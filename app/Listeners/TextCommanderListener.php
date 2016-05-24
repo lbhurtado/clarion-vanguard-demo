@@ -95,14 +95,14 @@ abstract class TextCommanderListener
      * pass the attributes.
      *
      * @param  ShortMessageWasRecorded  $event
-     * @return void
+     * @return mixed
      */
     public function handle(ShortMessageWasRecorded $event)
     {
         $this->setEvent($event);
         if ($this->regexMatches())
         {
-            $this->execute();
+            return $this->execute();
         }
     }
 

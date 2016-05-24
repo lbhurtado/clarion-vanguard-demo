@@ -96,7 +96,7 @@ class ShortMessageTest extends TestCase
     {
 //        $this->artisan('db:seed');
         $short_message = factory(ShortMessage::class)->create(['message' => 'brods please ...']);
-        
+
 //        $this->assertEquals('brods', strtolower($short_message->getInstruction()->getKeyword()));
     }
 }

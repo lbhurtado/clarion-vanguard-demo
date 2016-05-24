@@ -2,11 +2,12 @@
 
 namespace App\Repositories;
 
-use Prettus\Repository\Eloquent\BaseRepository;
 use Prettus\Repository\Criteria\RequestCriteria;
+use Prettus\Repository\Eloquent\BaseRepository;
 use App\Repositories\PendingRepository;
-use App\Entities\Pending;
 use App\Validators\PendingValidator;
+use App\Presenters\PendingPresenter;
+use App\Entities\Pending;
 
 /**
  * Class PendingRepositoryEloquent
@@ -31,10 +32,17 @@ class PendingRepositoryEloquent extends BaseRepository implements PendingReposit
     */
     public function validator()
     {
-
         return PendingValidator::class;
     }
 
+    /**
+     * Specify Presenter class name
+     * @return mixed
+     */
+    public function presenter()
+    {
+        return PendingPresenter::class;
+    }
 
     /**
      * Boot up the repository, pushing criteria

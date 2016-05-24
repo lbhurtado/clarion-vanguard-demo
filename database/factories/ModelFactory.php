@@ -55,3 +55,12 @@ $factory->define(App\Entities\WhitelistedNumber::class, function (Faker\Generato
         'mobile' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
     ];
 });
+
+$factory->define(App\Entities\Pending::class, function (Faker\Generator $faker) {
+    return [
+        'from' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'to' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'message' => $faker->sentence,
+        'token' => str_random(4),
+    ];
+});

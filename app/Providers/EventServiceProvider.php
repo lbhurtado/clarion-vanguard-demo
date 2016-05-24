@@ -16,7 +16,7 @@ class EventServiceProvider extends ServiceProvider
         \App\Events\ShortMessageWasRecorded::class => [
             \App\Listeners\Capture\Contact::class,
             \App\Listeners\Capture\GroupMembership::class,
-//            \App\Listeners\Capture\BroadcastRequest::class,
+            \App\Listeners\Capture\BroadcastRequest::class,
 //            \App\Listeners\Capture\BroadcastApproved::class,
             'App\Listeners\Capture\Instruction',
         ],
@@ -38,10 +38,10 @@ class EventServiceProvider extends ServiceProvider
 //            \App\Listeners\Notify\ContactAboutGroupMembershipProcessing::class,
 //            '\App\Listeners\Relay\ToOthersAboutGroupMembershipProcessing',
 //        ],
-        \App\Events\BroadcastWasRequested::class => [
-            \App\Listeners\Notify\ContactAboutBroadcastRequest::class,
-            \App\Listeners\Relay\ToOthersAboutBroadcastRequest::class,
-        ],
+//        \App\Events\BroadcastWasRequested::class => [
+//            \App\Listeners\Notify\ContactAboutBroadcastRequest::class,
+//            \App\Listeners\Relay\ToOthersAboutBroadcastRequest::class,
+//        ],
 //        \App\Events\BroadcastWasApproved::class => [
 //            'App\Listeners\Notify\ContactAboutBroadcastApproval',
 //            'App\Listeners\Relay\ToOthersAboutBroadcastApproval',

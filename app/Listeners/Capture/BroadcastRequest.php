@@ -26,12 +26,12 @@ class BroadcastRequest extends TextCommanderListener
     /**
      * Handle the event if regex matches.
      *
-     * @return void
+     * @return string
      */
     protected function execute()
     {
         $group = $this->groups->findByAlias($this->group_alias)->first();
 
-        $this->groups->generatePendingMessages($group, $this->message, $this->mobile);
+        return $this->groups->generatePendingMessages($group, $this->message, $this->mobile);
     }
 }
