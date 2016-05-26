@@ -5,6 +5,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use App\Repositories\InfoRepository;
 use App\Entities\Info;
+use League\Csv\Reader;
 
 class InfoTest extends TestCase
 {
@@ -43,5 +44,22 @@ class InfoTest extends TestCase
 
         $description = 'Test Description 2';
         factory(Info::class)->create(compact('code', 'description'));
+    }
+
+    /** @test */
+    function info_can_be_seeded()
+    {
+        $this->artisan('db:seed', ['--class' => 'InfosTableSeeder']);
+        $reader = Reader::createFromPath(database_path('infos.csv'));
+        $table = $this->app->make(InfoRepository::class)->first()->getTable();
+        if (!is_null($table))
+        {
+            foreach ($reader as $index => $row)
+            {
+                $code = $row[0];
+                $description = $row[1];
+                $this->seeInDatabase($table, compact('code', 'description'));
+            }
+        }
     }
 }
