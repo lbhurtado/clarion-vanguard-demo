@@ -41,6 +41,7 @@ $factory->define(App\Entities\ShortMessage::class, function (Faker\Generator $fa
         'from' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
         'to' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
         'message' => $faker->sentence,
+        'direction' => INCOMING
     ];
 });
 
@@ -62,5 +63,12 @@ $factory->define(App\Entities\Pending::class, function (Faker\Generator $faker) 
         'to' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
         'message' => $faker->sentence,
         'token' => str_random(4),
+    ];
+});
+
+$factory->define(App\Entities\Info::class, function (Faker\Generator $faker) {
+    return [
+        'code' => $faker->word,
+        'description' => $faker->sentence
     ];
 });

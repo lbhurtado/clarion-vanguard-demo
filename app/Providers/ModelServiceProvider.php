@@ -13,6 +13,7 @@ use App\Entities\ShortMessage;
 use App\Entities\Contact;
 use App\Entities\Pending;
 use App\Entities\Group;
+use App\Entities\Info;
 use App\Mobile;
 
 class ModelServiceProvider extends ServiceProvider
@@ -73,6 +74,14 @@ class ModelServiceProvider extends ServiceProvider
 
         WhitelistedNumber::creating(function($model){
             $model->mobile = Mobile::number($model->mobile);
+        });
+
+        Info::creating(function ($model) {
+            $model->code = strtolower($model->code);
+        });
+
+        Info::updating(function ($model) {
+            $model->code = strtolower($model->code);
         });
     }
 

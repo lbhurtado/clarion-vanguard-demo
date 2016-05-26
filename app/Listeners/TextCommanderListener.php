@@ -42,6 +42,7 @@ abstract class TextCommanderListener
      */
     public function regexMatches(&$matches = null)
     {
+
         if (preg_match(static::$regex, $this->message, $matches))
         {
             foreach ($matches as $k => $v)
