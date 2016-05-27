@@ -6,13 +6,12 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Events\ShortMessageWasRecorded;
-use App\Entities\ShortMessage;
 
 abstract class TextCommanderListener
 {
     use DispatchesJobs;
 
-    static protected $regex;
+//    static protected $regex;
 
     private $message;
 
@@ -21,6 +20,10 @@ abstract class TextCommanderListener
     protected $event;
 
     protected $attributes;
+
+    protected $repository;
+
+    protected $regex = "/(?<command>%s)\s?(?<arguments>.*)/i";
 
     /**
      * @param mixed $event
@@ -42,8 +45,7 @@ abstract class TextCommanderListener
      */
     public function regexMatches(&$matches = null)
     {
-
-        if (preg_match(static::$regex, $this->message, $matches))
+        if (preg_match($this->regex, $this->message, $matches))
         {
             foreach ($matches as $k => $v)
             {
@@ -105,6 +107,19 @@ abstract class TextCommanderListener
         {
             return $this->execute();
         }
+    }
+
+    /**
+     * Modify the regex, get all the columns in Model
+     * and concatenate the result.
+     *
+     * @param string $column
+     */
+    protected function populateRegex($column = 'code')
+    {
+        $keywords = implode('|', $this->repository->all()->pluck($column)->toArray());
+//        static::$regex = sprintf(static::$regex, $keywords);
+        $this->regex = sprintf($this->regex, $keywords);
     }
 
     /**

@@ -7,7 +7,6 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\Repositories\ContactRepository;
 use App\Repositories\GroupRepository;
 use App\Entities\ShortMessage;
-use SimpleSoftwareIO\SMS\Facades\SMS;
 use App\Jobs\JoinGroup;
 use App\Mobile;
 
@@ -28,7 +27,7 @@ class JoinGroupTest extends TestCase
         $this->assertCount(0, $groups->find($group->id)->contacts);
 
         $attributes = [
-            'group_alias' => $group->alias,
+            'keyword' => $group->alias,
             'mobile' => $contact->mobile,
             'handle' => $contact->handle,
         ];

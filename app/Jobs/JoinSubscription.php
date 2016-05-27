@@ -2,20 +2,20 @@
 
 namespace App\Jobs;
 
-use App\Events\GroupMembershipsWereProcessed;
+use App\Events\SubscriptionMembershipsWereProcessed;
 use App\Repositories\ContactRepository;
-use App\Repositories\GroupRepository;
+use App\Repositories\SubscriptionRepository;
 
-class JoinGroup extends JoinUnit
+class JoinSubscription extends JoinUnit
 {
-    protected $column = 'name';
-    protected static $event = GroupMembershipsWereProcessed::class;
+    protected $column = 'code';
+    protected $event = SubscriptionMembershipsWereProcessed::class;
 
     /**
      * @param ContactRepository $contactRepository
-     * @param GroupRepository $unitRepository
+     * @param SubscriptionRepository $unitRepository
      */
-    public function handle(ContactRepository $contactRepository, GroupRepository $unitRepository)
+    public function handle(ContactRepository $contactRepository, SubscriptionRepository $unitRepository)
     {
         list($prospect, $unit) = $this->getProspectAndUnit($contactRepository, $unitRepository);
 

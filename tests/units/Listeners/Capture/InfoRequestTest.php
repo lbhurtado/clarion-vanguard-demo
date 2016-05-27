@@ -32,7 +32,7 @@ class InfoRequestTest extends TestCase
             $listener->handle(new ShortMessageWasRecorded($short_message));
 
             $this->assertTrue($listener->regexMatches($attributes));
-            $this->assertEquals($code, $attributes['code']);
+            $this->assertEquals($code, $attributes['command']);
         }
 
         $this->assertEquals(Mobile::number('09173011987'), $attributes['mobile']);

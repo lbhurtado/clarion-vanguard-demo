@@ -19,6 +19,7 @@ class EventServiceProvider extends ServiceProvider
             \App\Listeners\Capture\BroadcastRequest::class,
             \App\Listeners\Capture\BroadcastApproved::class,
             \App\Listeners\Capture\InfoRequest::class,
+            \App\Listeners\Capture\SubscriptionMembership::class,
         ],
         'App\Events\BlacklistedNumberDetected' => [
             'App\Listeners\Validate\ActionAboutBlacklistedNumberDetection',
@@ -34,10 +35,14 @@ class EventServiceProvider extends ServiceProvider
 //            'App\Listeners\Notify\ContactAboutContactCreation',
 //            'App\Listeners\Relay\ToOthersAboutContactCreation',
 //        ],
-//        \App\Events\GroupMembershipsWereProcessed::class => [
-//            \App\Listeners\Notify\ContactAboutGroupMembershipProcessing::class,
-//            '\App\Listeners\Relay\ToOthersAboutGroupMembershipProcessing',
-//        ],
+        \App\Events\GroupMembershipsWereProcessed::class => [
+            \App\Listeners\Notify\ContactAboutGroupMembershipProcessing::class,
+            '\App\Listeners\Relay\ToOthersAboutGroupMembershipProcessing',
+        ],
+        \App\Events\SubscriptionMembershipsWereProcessed::class => [
+            'App\Listeners\Notify\ContactAboutSubscriptionMembershipProcessing',
+            'App\Listeners\Relay\ToOthersAboutSubscriptionMembershipProcessing',
+        ],
         \App\Events\BroadcastWasRequested::class => [
             \App\Listeners\Notify\ContactAboutBroadcastRequest::class,
             \App\Listeners\Relay\ToOthersAboutBroadcastRequest::class,

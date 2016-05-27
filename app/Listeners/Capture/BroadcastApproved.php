@@ -12,7 +12,7 @@ use App\Jobs\SendShortMessage;
 
 class BroadcastApproved extends TextCommanderListener
 {
-    static protected $regex = "/(approve)\s?(?<token>.*)/i";
+    protected $regex = "/(approve)\s?(?<token>.*)/i";
 
     private $pendings;
 

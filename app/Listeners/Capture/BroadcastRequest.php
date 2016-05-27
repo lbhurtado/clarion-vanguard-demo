@@ -11,7 +11,7 @@ use App\Repositories\GroupRepository;
 class BroadcastRequest extends TextCommanderListener
 {
 
-    static protected $regex = "/(?:(?:broadcast|send)\s?|@)(?<group_alias>[^\s]+)\s?(?<message>.*)/i";
+    protected $regex = "/(?:(?:broadcast|send)\s?|@)(?<group_alias>[^\s]+)\s?(?<message>.*)/i";
 
     private $groups;
 

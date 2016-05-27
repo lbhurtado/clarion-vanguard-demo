@@ -9,7 +9,7 @@ use App\Jobs\JoinGroup;
 
 class GroupMembership extends TextCommanderListener
 {
-    static protected $regex = "/(?<group_alias>[^\s]+)\s?(?<handle>.*)/i";
+    protected $regex = "/(?<group_alias>[^\s]+)\s?(?<handle>.*)/i";
 
     /**
      * Handle the event if regex matches.

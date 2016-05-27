@@ -72,3 +72,10 @@ $factory->define(App\Entities\Info::class, function (Faker\Generator $faker) {
         'description' => $faker->sentence
     ];
 });
+
+$factory->define(App\Entities\Subscription::class, function (Faker\Generator $faker) {
+    return [
+        'code' => $faker->word,
+        'description' => $faker->sentence
+    ];
+});

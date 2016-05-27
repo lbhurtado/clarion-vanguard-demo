@@ -30,6 +30,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(\App\Repositories\BlacklistedNumberRepository::class, \App\Repositories\BlacklistedNumberRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\WhitelistedNumberRepository::class, \App\Repositories\WhitelistedNumberRepositoryEloquent::class);
         $this->app->bind(\App\Repositories\InfoRepository::class, \App\Repositories\InfoRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\SubscriptionRepository::class, \App\Repositories\SubscriptionRepositoryEloquent::class);
+        $this->app->bind(\App\Repositories\TokenRepository::class, \App\Repositories\TokenRepositoryEloquent::class);
         //:end-bindings:
     }
 }

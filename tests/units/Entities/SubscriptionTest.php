@@ -3,62 +3,62 @@
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
-use App\Repositories\InfoRepository;
-use App\Entities\Info;
+use App\Repositories\SubscriptionRepository;
+use App\Entities\Subscription;
 use League\Csv\Reader;
 
-class InfoTest extends TestCase
+class SubscriptionTest extends TestCase
 {
     use DatabaseMigrations;
 
     /** @test */
-    function info_has_code_description_fields()
+    function subscription_has_code_description_fields()
     {
         $code = 'test';
         $description = 'Test Description';
-        $info = factory(Info::class)->create(compact('code', 'description'));
+        $info = factory(Subscription::class)->create(compact('code', 'description'));
 
         $this->assertEquals($code, $info->code);
         $this->assertEquals($description, $info->description);
     }
 
     /** @test */
-    function info_has_required_code_and_description_fields()
+    function subscription_has_required_code_and_description_fields()
     {
         $code = 'test';
         $description = 'Test Description';
         $this->setExpectedException(Prettus\Validator\Exceptions\ValidatorException::class);
-        $this->app->make(InfoRepository::class)->create(compact('description'));
+        $this->app->make(SubscriptionRepository::class)->create(compact('description'));
         $this->setExpectedException(Prettus\Validator\Exceptions\ValidatorException::class);
-        $this->app->make(InfoRepository::class)->create(compact('code'));
+        $this->app->make(SubscriptionRepository::class)->create(compact('code'));
     }
 
     /** @test */
-    function info_has_unique_code_field()
+    function subscription_has_unique_code_field()
     {
         $this->setExpectedException(Illuminate\Database\QueryException::class);
 
         $code = 'test';
         $description = 'Test Description 1';
-        factory(Info::class)->create(compact('code', 'description'));
+        factory(Subscription::class)->create(compact('code', 'description'));
 
         $description = 'Test Description 2';
-        factory(Info::class)->create(compact('code', 'description'));
+        factory(Subscription::class)->create(compact('code', 'description'));
     }
 
     /** @test */
-    function info_can_be_seeded()
+    function subscription_can_be_seeded()
     {
-        $this->artisan('db:seed', ['--class' => 'InfosTableSeeder']);
-        $reader = Reader::createFromPath(database_path('infos.csv'));
-        $info = $this->app->make(InfoRepository::class)->first();
-        if (!is_null($info))
+        $this->artisan('db:seed', ['--class' => 'SubscriptionsTableSeeder']);
+        $reader = Reader::createFromPath(database_path('subscriptions.csv'));
+        $subscription = $this->app->make(SubscriptionRepository::class)->first();
+        if (!is_null($subscription))
         {
             foreach ($reader as $index => $row)
             {
                 $code = $row[0];
                 $description = $row[1];
-                $this->seeInDatabase($info->getTable(), compact('code', 'description'));
+                $this->seeInDatabase($subscription->getTable(), compact('code', 'description'));
             }
         }
     }
