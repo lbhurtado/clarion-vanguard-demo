@@ -49,12 +49,21 @@ class TokenRepositoryEloquent extends BaseRepository implements TokenRepository
     function claim(Contact $contact, $code, Closure $callback = null)
     {
         $token = $this
-            ->findByField('code', $code)
+            ->findByFieldCaseInsensitive('code', $code)
             ->first()
             ->conjureObject()
             ->claimed_by($contact);
+
         $object = $token->getObject();
-        $token->delete();
+
+        if (is_int($token->quota)){
+            $token->quota = $token->quota - 1;
+        }
+
+        if ($token->quota === 0)
+        {
+            $token->delete();
+        }
 
         if (is_null($callback))
             return $object;
@@ -67,19 +76,52 @@ class TokenRepositoryEloquent extends BaseRepository implements TokenRepository
 
     /**
      * Generate tokens given a collection
+     *
      * @param Collection $collection
      * @param $code
+     * @param $quota
      * @return mixed
      */
-    function generate(Collection $collection, $code = null)
+    function generate(Collection $collection, $code = null, $quota = null)
     {
-        $collection->each(function($item, $key) use ($code) {
+        $collection->each(function($item, $key) use ($code, $quota) {
             $this->create([
                 'code'       => $code ?: str_random(6),
                 'class'      => get_class($item),
-                'reference'  => $item->id
+                'reference'  => $item->id,
+                'quota'      => $quota
             ]);
         });
+    }
+
+    /**
+     * Generate 1-time tokens give a collection
+     *
+     * @param Collection $collection
+     * @param null $code
+     * @return mixed
+     */
+    function generateOneTime(Collection $collection, $code = null)
+    {
+        $this->generate($collection, $code, 1);
+    }
+
+    /**
+     * @param $field
+     * @param null $value
+     * @param array $columns
+     * @return mixed
+     */
+    public function findByFieldCaseInsensitive($field, $value = null, $columns = ['*'])
+    {
+        $this->applyCriteria();
+        $this->applyScope();
+//        $value = preg_replace('/\s+/', '', strtoupper($value));
+        $value = strtoupper(trim($value));
+        $model = $this->model->whereRaw("UPPER($field) = ?", [$value])->get($columns);
+        $this->resetModel();
+
+        return $this->parserResult($model);
     }
 
     /**
@@ -89,4 +131,5 @@ class TokenRepositoryEloquent extends BaseRepository implements TokenRepository
     {
         $this->pushCriteria(app(RequestCriteria::class));
     }
+
 }

@@ -17,11 +17,17 @@ class Token extends Model implements Transformable
 		'code',
 		'class',
 		'reference',
+		'quota'
 	];
 
 	protected $casts = [
-		'reference' => 'integer'
+		'reference' => 'integer',
+		'quota' => 'integer'
 	];
+
+//	protected $attributes = [
+//		'quota' => PHP_INT_MAX,
+//	];
 
 	protected $dates = ['deleted_at'];
 
@@ -61,12 +67,17 @@ class Token extends Model implements Transformable
 		return $this->object;
 	}
 
-	public static function generate(Model $model, $code = null)
+	public static function generate(Model $model, $code = null, $quota = null)
 	{
 		$code = $code ?: str_random(6);
 		$class = get_class($model);
 		$reference = $model->id;
 
-		return static::create(compact('code', 'class', 'reference'));
+		return static::create(compact('code', 'class', 'reference', 'quota'));
+	}
+
+	public static function generateOneTime(Model $model, $code = null)
+	{
+		return static::generate($model, $code, 1);
 	}
 }

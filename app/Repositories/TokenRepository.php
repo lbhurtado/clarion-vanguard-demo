@@ -23,9 +23,28 @@ interface TokenRepository extends RepositoryInterface
 
     /**
      * Generate tokens given a collection
+     *
      * @param Collection $collection
      * @param $code
+     * @param $quota
      * @return mixed
      */
-    function generate(Collection $collection, $code = null);
+    function generate(Collection $collection, $code = null, $quota = null);
+
+    /**
+     * Generate 1-time tokens give a collection
+     *
+     * @param Collection $collection
+     * @param null $code
+     * @return mixed
+     */
+    function generateOneTime(Collection $collection, $code = null);
+
+    /**
+     * @param $field
+     * @param null $value
+     * @param array $columns
+     * @return mixed
+     */
+    public function findByFieldCaseInsensitive($field, $value = null, $columns = ['*']);
 }

@@ -60,16 +60,17 @@ class TokenTest extends TestCase
 
         $tokens = App::make(TokenRepository::class)->skipPresenter();
         $claim_code = 'ABC1234';
-        $unclaimed_code = 'XYZ4321';
+        $multiple_usage_code = 'XYZ4321';
         $tokens->create([
             'code'       => $claim_code,
             'class'      => Group::class,
-            'reference'  => $group1->id
+            'reference'  => $group1->id,
+            'quota'      => 1,
         ]);
         $tokens->create([
-            'code'       => $unclaimed_code,
+            'code'       => $multiple_usage_code,
             'class'     => Group::class,
-            'reference'  => $group2->id
+            'reference'  => $group2->id,
         ]);
 
         $this->assertCount(2, $tokens->all());
@@ -86,7 +87,15 @@ class TokenTest extends TestCase
         $this->assertCount(1, $tokens->all());
 
         $token = $tokens->first();
-        $this->assertEquals($unclaimed_code, $token->code);
+        $this->assertEquals($multiple_usage_code, $token->code);
+
+        $tokens->claim($contact, $multiple_usage_code);
+        $tokens->claim($contact, $multiple_usage_code);
+        $tokens->claim($contact, $multiple_usage_code);
+        $tokens->claim($contact, $multiple_usage_code);
+        $tokens->claim($contact, $multiple_usage_code);
+        $this->assertCount(1, $tokens->all());
+
     }
 
     /** @test */
@@ -118,7 +127,7 @@ class TokenTest extends TestCase
         $contact = factory(Contact::class)->create();
         $group1 = factory(Group::class)->create();
         $group2 = factory(Group::class)->create();
-        $token1 = Token::generate($group1);
+        $token1 = Token::generateOneTime($group1);
         $token2 = Token::generate($group2);
 
         $tokens = $this->app->make(TokenRepository::class)->skipPresenter();
@@ -134,7 +143,7 @@ class TokenTest extends TestCase
             return $object->name;
         });
 
-        $this->assertCount(0, $tokens->all());
+        $this->assertCount(1, $tokens->all());
         $this->assertEquals($name, $group2->name);
 
     }

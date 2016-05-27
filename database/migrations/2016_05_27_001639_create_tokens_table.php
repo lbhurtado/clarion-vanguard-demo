@@ -18,6 +18,7 @@ class CreateTokensTable extends Migration
 			$table->string('code')->unique();
 			$table->string('class')->index();
 			$table->integer('reference')->unsigned()->index();
+			$table->integer('quota')->unsigned()->nullable();
 			$table->integer('contact_id')->unsigned()->nullable();
 			$table->dateTime('claimed_at')->nullable();
 			$table->timestamps();
