@@ -69,7 +69,7 @@ class TokenTest extends TestCase
         ]);
         $tokens->create([
             'code'       => $multiple_usage_code,
-            'class'     => Group::class,
+            'class'      => Group::class,
             'reference'  => $group2->id,
         ]);
 

@@ -2,14 +2,42 @@
 
 namespace App\Listeners\Capture;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use App\Listeners\TextCommanderListener;
+use App\Repositories\ContactRepository;
+use App\Repositories\TokenRepository;
+use App\Repositories\GroupRepository;
 use App\Jobs\JoinGroup;
 
 class GroupMembership extends TextCommanderListener
 {
-    protected $regex = "/(?<group_alias>[^\s]+)\s?(?<handle>.*)/i";
+    protected $regex = "/(?<token>{App\Entities\Group})\s?(?<handle>.*)/i";
+
+    protected $column = 'alias';
+
+    private $tokens;
+
+    private $contacts;
+
+    protected $mappings = [
+        'attributes' =>
+            [
+                'token'  => 'keyword',
+                'mobile' => 'mobile',
+                'handle' => 'handle'
+            ],
+    ];
+
+    /**
+     * @param GroupRepository $repository
+     * @param TokenRepository $tokens
+     * @param ContactRepository $contacts
+     */
+    public function __construct(GroupRepository $repository, TokenRepository $tokens, ContactRepository $contacts)
+    {
+        $this->repository = $repository;
+        $this->tokens = $tokens;
+        $this->contacts = $contacts;
+    }
 
     /**
      * Handle the event if regex matches.
@@ -18,7 +46,16 @@ class GroupMembership extends TextCommanderListener
      */
     protected function execute()
     {
-        $job = new JoinGroup($this->attributes);
-        $this->dispatch($job);
+        $token = $this->attributes['keyword'];
+        
+        $contact = $this->contacts->findByField('mobile', $this->attributes['mobile'])->first();
+        if (!is_null($contact))
+        {
+            $this->tokens->claim($contact, $token, function($group) use ($contact) {
+                $job = new JoinGroup($this->attributes);
+                $this->dispatch($job);
+            });
+        }
+
     }
 }

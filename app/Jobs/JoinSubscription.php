@@ -20,7 +20,7 @@ class JoinSubscription extends JoinUnit
         list($prospect, $unit) = $this->getProspectAndUnit($contactRepository, $unitRepository);
 
         if ($unit) {
-            $this->updateHandleOfContact($prospect, $this->handle);
+            $this->updateHandle($prospect, $this->handle);
             $this->joinUnit($unit, $prospect);
         }
     }

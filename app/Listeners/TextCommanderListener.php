@@ -11,32 +11,35 @@ abstract class TextCommanderListener
 {
     use DispatchesJobs;
 
-//    static protected $regex;
-
-    private $message;
-
-    private $mobile;
-
     protected $event;
 
     protected $attributes;
 
     protected $repository;
 
-    protected $regex = "/(?<command>%s)\s?(?<arguments>.*)/i";
+    protected $regex; // "/(?<token>{put class here})\s?(?<handle>.*)/i";
+
+    protected $column;
+
+    protected $mappings = [
+        'attributes' =>
+            [
+                'token'  => 'token',
+                'mobile' => 'mobile',
+                'handle' => 'handle'
+            ],
+    ];
 
     /**
      * @param mixed $event
      */
-    public function setEvent($event)
+    protected function setEvent($event)
     {
         $this->event = $event;
-        $this->message = $event->shortMessage->message;
-        $this->mobile = $event->shortMessage->mobile;
     }
 
     /**
-     * Check if the message has the same pattern as the static::$regex.
+     * Check if the message has the same pattern as the $this->regex.
      * Visibility is made public for testing purposes only.
      * &$matches parameter for testing purposes only.
      *
@@ -45,18 +48,27 @@ abstract class TextCommanderListener
      */
     public function regexMatches(&$matches = null)
     {
-        if (preg_match($this->regex, $this->message, $matches))
+        if (preg_match($this->regex, $this->event->shortMessage->message, $matches))
         {
+            $m = [];
+
             foreach ($matches as $k => $v)
             {
                 if (is_int($k))
                 {
                     unset($matches[$k]);
                 }
+                else
+                {
+                  $m[$this->mappings['attributes'][$k]] = $v;
+                }
             }
+            $m = $this->insertMobile($m);
+
             $matches = $this->insertMobile($matches);
 
-            $this->attributes = $matches;
+//            $this->attributes = $matches;
+            $this->attributes = $m;
 
             return true;
         }
@@ -73,36 +85,34 @@ abstract class TextCommanderListener
      */
     private function insertMobile(&$matches)
     {
-        $matches ['mobile'] = $this->mobile;
+        $matches [$this->mappings['attributes']['mobile']] = $this->event->shortMessage->mobile;
 
         return $matches;
     }
 
-
     /**
-     * Magic method to get individual variables from $this->attributes
+     * Handle the event. Execute if regexMatches.
+     * Save the event just in case it is
+     * needed by other sub-classes.
      *
-     * @param $name
-     * @return mixed
-     */
-    public function __get($name)
-    {
-        if (array_key_exists($name, $this->attributes))
-        {
-            return $this->attributes[$name];
-        }
-    }
-
-    /**
-     * Handle the event. And
-     * pass the attributes.
-     *
-     * @param  ShortMessageWasRecorded  $event
-     * @return mixed
+     * @param ShortMessageWasRecorded $event
+     * @throws \Exception
      */
     public function handle(ShortMessageWasRecorded $event)
     {
         $this->setEvent($event);
+
+        if (is_null($this->repository))
+            throw new \Exception('$this->repository cannot be null');
+
+        if (is_null($this->regex))
+            throw new \Exception('$this->regex cannot be null');
+
+        if (is_null($this->column))
+            throw new \Exception('$this->column cannot be null');
+
+        $this->processRegex($this->regex, $this->column);
+
         if ($this->regexMatches())
         {
             return $this->execute();
@@ -110,16 +120,42 @@ abstract class TextCommanderListener
     }
 
     /**
-     * Modify the regex, get all the columns in Model
-     * and concatenate the result.
+     * Placeholders for keywords from the database are
+     * placed in curly brackets {} in $this->regex.
+     * Depending on the tags, table and column.
      *
-     * @param string $column
+     * @param &$regex
+     * @param $column
+     * @throws \Exception
+     * @return void
      */
-    protected function populateRegex($column = 'code')
+    protected function processRegex(&$regex, $column)
     {
-        $keywords = implode('|', $this->repository->all()->pluck($column)->toArray());
-//        static::$regex = sprintf(static::$regex, $keywords);
-        $this->regex = sprintf($this->regex, $keywords);
+        if (preg_match_all("/<(?<tags>[^>]*)>/", $regex, $matches)) {
+            $tags = $matches['tags'];
+
+            if (array_key_exists(0, $tags)) {
+                switch ($tags[0]) {
+                    case 'token':
+                        if (!isset($this->repository))
+                            throw new \Exception('The $this->repository cannot be null if token tag is present!');
+                        if (!isset($column))
+                            throw new \Exception('The $column cannot be null if token tag is present!');
+                        $keywords = implode('|', $this->repository->all()->pluck($column)->toArray());
+                        $regex = preg_replace("/{(?<class>[^}]*)}/i", $keywords, $regex);
+
+                        break;
+                }
+            }
+
+            if (array_key_exists(1, $tags)) {
+                switch ($tags[1]) {
+                    case 'handle':
+
+                        break;
+                }
+            }
+        }
     }
 
     /**

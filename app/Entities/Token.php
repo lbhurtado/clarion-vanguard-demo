@@ -25,10 +25,6 @@ class Token extends Model implements Transformable
 		'quota' => 'integer'
 	];
 
-//	protected $attributes = [
-//		'quota' => PHP_INT_MAX,
-//	];
-
 	protected $dates = ['deleted_at'];
 
 	public function claimer()

@@ -35,7 +35,6 @@ class ContactAboutGroupMembershipProcessing
     public function handle(GroupMembershipsWereProcessed $event)
     {
         $mobile = $event->contact->mobile;
-
         $handle = $this->contacts->findByField('mobile', $mobile)->first()->handle;
         $message = $event->new
             ? "Thank you, Vgd. {$handle}. You are now subscribed to our messaging system, sir."

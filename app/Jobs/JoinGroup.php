@@ -8,20 +8,24 @@ use App\Repositories\GroupRepository;
 
 class JoinGroup extends JoinUnit
 {
-    protected $column = 'name';
-    protected static $event = GroupMembershipsWereProcessed::class;
+    protected $event = GroupMembershipsWereProcessed::class;
 
     /**
-     * @param ContactRepository $contactRepository
-     * @param GroupRepository $unitRepository
+     * @param ContactRepository $contacts
+     * @param GroupRepository $units
      */
-    public function handle(ContactRepository $contactRepository, GroupRepository $unitRepository)
+    public function handle(ContactRepository $contacts, GroupRepository $units)
     {
-        list($prospect, $unit) = $this->getProspectAndUnit($contactRepository, $unitRepository);
+        $this->mappings['fields']['unit'] = 'alias';
+        $this->mappings['values']['token'] = 'keyword';
 
+        $prospect = $this->getProspect($contacts);
+        $unit = $this->getUnit($units);
         if ($unit) {
-            $this->updateHandleOfContact($prospect, $this->handle);
+            $handle = $this->attributes[$this->mappings['values']['handle']];
+            $this->updateHandle($prospect, $handle);
             $this->joinUnit($unit, $prospect);
+            event(new GroupMembershipsWereProcessed($unit, $prospect));
         }
     }
 }
