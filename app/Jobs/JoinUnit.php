@@ -48,23 +48,31 @@ class JoinUnit extends Job
     /**
      * @param ContactRepository $contacts
      * @return mixed
+     * @throws \Exception
      */
     protected function getProspect(ContactRepository $contacts)
     {
         $field = $this->mappings['fields']['contact'];
         $value = Mobile::number($this->attributes[$this->mappings['values']['mobile']]);
+        $contact = $contacts->findByField($field, $value)->first();
+        if (is_null($contact))
+            throw new \Exception("Contact with {$value} does not exists!");
 
-        return $contacts->findByField($field, $value)->first();
+        return $contact;
     }
 
     /**
      * @param RepositoryInterface $units
      * @return mixed
+     * @throws \Exception
      */
     protected function getUnit(RepositoryInterface $units)
     {
         $field = $this->mappings['fields']['unit'];
         $value = $this->attributes[$this->mappings['values']['token']];
+        $unit = $units->findByField($field, $value)->first();
+        if (is_null($unit))
+            throw new \Exception("Unit with {$value} does not exists!");
 
         return $units->findByField($field, $value)->first();
     }

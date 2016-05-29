@@ -90,13 +90,4 @@ class ShortMessageTest extends TestCase
         $this->assertEquals(Mobile::number('09173011987'), $contact->mobile);
         $this->assertEquals(Mobile::number('09173011987'), $contact->handle);
     }
-
-    /** @test */
-    function short_message_has_instructions()
-    {
-//        $this->artisan('db:seed');
-        $short_message = factory(ShortMessage::class)->create(['message' => 'brods please ...']);
-
-//        $this->assertEquals('brods', strtolower($short_message->getInstruction()->getKeyword()));
-    }
 }

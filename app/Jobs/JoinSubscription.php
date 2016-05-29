@@ -12,15 +12,20 @@ class JoinSubscription extends JoinUnit
     protected $event = SubscriptionMembershipsWereProcessed::class;
 
     /**
-     * @param ContactRepository $contactRepository
-     * @param SubscriptionRepository $unitRepository
+     * @param ContactRepository $contacts
+     * @param SubscriptionRepository $units
      */
-    public function handle(ContactRepository $contactRepository, SubscriptionRepository $unitRepository)
+    public function handle(ContactRepository $contacts, SubscriptionRepository $units)
     {
-        list($prospect, $unit) = $this->getProspectAndUnit($contactRepository, $unitRepository);
+        $this->mappings['fields']['unit'] = 'code';
+        $this->mappings['values']['token'] = 'keyword';
+
+        $prospect = $this->getProspect($contacts);
+        $unit = $this->getUnit($units);
 
         if ($unit) {
-            $this->updateHandle($prospect, $this->handle);
+            $handle = $this->attributes[$this->mappings['values']['handle']];
+            $this->updateHandle($prospect, $handle);
             $this->joinUnit($unit, $prospect);
         }
     }

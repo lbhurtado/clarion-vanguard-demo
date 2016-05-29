@@ -19,12 +19,9 @@ class GroupMembership extends TextCommanderListener
     private $contacts;
 
     protected $mappings = [
-        'attributes' =>
-            [
-                'token'  => 'keyword',
-                'mobile' => 'mobile',
-                'handle' => 'handle'
-            ],
+        'attributes' => [
+            'token'  => 'keyword',
+        ],
     ];
 
     /**
@@ -47,7 +44,7 @@ class GroupMembership extends TextCommanderListener
     protected function execute()
     {
         $token = $this->attributes['keyword'];
-        
+
         $contact = $this->contacts->findByField('mobile', $this->attributes['mobile'])->first();
         if (!is_null($contact))
         {

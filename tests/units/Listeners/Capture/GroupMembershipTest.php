@@ -42,14 +42,14 @@ class GroupMembershipTest extends TestCase
         $listener->handle(new ShortMessageWasRecorded($short_message));
 
         $this->assertTrue($listener->regexMatches($attributes));
-//        $this->assertEquals('uppa', $attributes['token']);
-//        $this->assertEquals(Mobile::number('09173011987'), $attributes['mobile']);
-//        $this->assertEquals("Lester '92", $attributes['handle']);
-//
-//        $this->assertCount(1, $group2->contacts);
-//
-//        $this->assertEquals(Mobile::number('09173011987'), $group2->contacts->first()->mobile);
-//        $this->assertEquals("Lester '92", $group2->contacts->first()->handle);
+        $this->assertEquals('uppa', $attributes['token']);
+        $this->assertEquals(Mobile::number('09173011987'), $attributes['mobile']);
+        $this->assertEquals("Lester '92", $attributes['handle']);
+
+        $this->assertCount(1, $group2->contacts);
+
+        $this->assertEquals(Mobile::number('09173011987'), $group2->contacts->first()->mobile);
+        $this->assertEquals("Lester '92", $group2->contacts->first()->handle);
 //        $this->seeInDatabase($group2->contacts()->getTable(), [
 //            'group_id' => $group2->id,
 //            'contact_id' => $contact->id

@@ -64,7 +64,8 @@ class GroupRepositoryEloquent extends BaseRepository implements GroupRepository
                 'token' => $token
             ]);
         }
-        event(new BroadcastWasRequested($group, $message, $origin, $token));
+
+//        event(new BroadcastWasRequested($group, $message, $origin, $token));
 
         return $token;
     }

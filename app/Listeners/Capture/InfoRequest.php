@@ -8,15 +8,24 @@ use App\Jobs\SendShortMessage;
 
 class InfoRequest extends TextCommanderListener
 {
+    protected $regex = "/(?<token>{App\Entities\Info})\s?(?<arguments>.*)/i";
+
+    protected $column = 'code';
+
+    protected $mappings = [
+        'attributes' => [
+            'token'  => 'keyword',
+        ],
+    ];
+
     /**
      *
      * InfoRequest constructor.
-     * @param $infos
+     * @param $repository
      */
-    public function __construct(InfoRepository $infos)
+    public function __construct(InfoRepository $repository)
     {
-        $this->repository = $infos->skipPresenter();
-        $this->populateRegex('code');
+        $this->repository = $repository;
     }
 
     /**
@@ -26,10 +35,10 @@ class InfoRequest extends TextCommanderListener
      */
     protected function execute()
     {
-        $info = $this->repository->findByCode($this->command)->first();
+        $info = $this->repository->findByCode($this->attributes['keyword'])->first();
         if (!is_null($info))
         {
-            $job = new SendShortMessage($this->mobile, $info->description);
+            $job = new SendShortMessage($this->attributes['mobile'], $info->description);
             $this->dispatch($job);
         }
     }

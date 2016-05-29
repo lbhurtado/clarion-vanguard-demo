@@ -25,7 +25,6 @@ class JoinGroup extends JoinUnit
             $handle = $this->attributes[$this->mappings['values']['handle']];
             $this->updateHandle($prospect, $handle);
             $this->joinUnit($unit, $prospect);
-            event(new GroupMembershipsWereProcessed($unit, $prospect));
         }
     }
 }

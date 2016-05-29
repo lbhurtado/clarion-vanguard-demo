@@ -45,6 +45,7 @@ class BroadcastRequestTest extends TestCase
 
             $short_message = factory(ShortMessage::class)->create([
                 'from'      => '09173011987',
+                'to'      => '09189362340',
                 'message'   => $message,
                 'direction' => INCOMING
             ]);
@@ -53,7 +54,7 @@ class BroadcastRequestTest extends TestCase
             $listener->handle(new ShortMessageWasRecorded($short_message));
 
             $this->assertTrue($listener->regexMatches($attributes));
-            $this->assertEquals('vanguard', $attributes['group_alias']);
+            $this->assertEquals('vanguard', $attributes['token']);
             $this->assertEquals(Mobile::number('09173011987'), $attributes['mobile']);
             $this->assertEquals("Hello there!", $attributes['message']);
         }

@@ -8,16 +8,23 @@ use App\Jobs\JoinSubscription;
 
 class SubscriptionMembership extends TextCommanderListener
 {
-//    static protected $regex = "/(?<command>%s)\s?(?<arguments>.*)/i";
+    protected $regex = "/(?<token>{App\Entities\Subscription})\s?(?<handle>.*)/i";
+
+    protected $column = 'code';
+
+    protected $mappings = [
+        'attributes' => [
+            'token'  => 'keyword',
+        ],
+    ];
 
     /**
      * SubscriptionMembership constructor.
-     * @param $subscriptions
+     * @param $repository
      */
-    public function __construct(SubscriptionRepository $subscriptions)
+    public function __construct(SubscriptionRepository $repository)
     {
-        $this->repository = $subscriptions;
-        $this->populateRegex('code');
+        $this->repository = $repository;
     }
 
     /**

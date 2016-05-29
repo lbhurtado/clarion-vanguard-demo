@@ -53,7 +53,15 @@ class Token extends Model implements Transformable
 	 */
 	public function conjureObject()
 	{
-		$this->object = \App::make($this->class)->find($this->reference);
+		try
+		{
+			$this->object = \App::make($this->class)->find($this->reference);
+		}
+		catch (\Exception $e)
+		{
+			dd($this->class);
+		}
+
 
 		return $this;
 	}

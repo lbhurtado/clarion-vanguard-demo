@@ -10,6 +10,7 @@ class SubscriptionMembershipsWereProcessed extends Event
 {
     use SerializesModels;
 
+    public $attributes;
     /**
      * Create a new event instance.
      *
@@ -17,7 +18,7 @@ class SubscriptionMembershipsWereProcessed extends Event
      */
     public function __construct($attributes)
     {
-        dd($attributes);
+        $this->attributes = $attributes;
     }
 
     /**

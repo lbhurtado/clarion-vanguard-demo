@@ -12,16 +12,22 @@ use App\Jobs\SendShortMessage;
 
 class BroadcastApproved extends TextCommanderListener
 {
-    protected $regex = "/(approve)\s?(?<token>.*)/i";
+    protected $regex = "/(approve)\s?(?<token>{App\Entities\Subscription})\s?(?<arguments>.*)/i";
 
-    private $pendings;
+    protected $column = 'token';
+
+    protected $mappings = [
+        'attributes' => [
+            'token'  => 'token',
+        ],
+    ];
 
     /**
-     * @param $pendings
+     * @param $repository
      */
-    public function __construct(PendingRepository $pendings)
+    public function __construct(PendingRepository $repository)
     {
-        $this->pendings = $pendings->skipPresenter();
+        $this->repository = $repository->skipPresenter();
     }
 
     /**
@@ -31,7 +37,7 @@ class BroadcastApproved extends TextCommanderListener
      */
     protected function execute()
     {
-        $pendings = $this->pendings->getByCriteria(new TokenCriterion($this->token))->all();
+        $pendings = $this->repository->getByCriteria(new TokenCriterion($this->attributes['token']))->all();
         foreach($pendings as $pending)
         {
             $job = new SendShortMessage($pending->to, $pending->message);

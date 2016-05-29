@@ -19,9 +19,15 @@ abstract class TextCommanderListener
 
     protected $regex; // "/(?<token>{put class here})\s?(?<handle>.*)/i";
 
+    /**
+     * This column is the field name of the table
+     * to be used for concatenation of keywords
+     * in the regex.
+     * @var
+     */
     protected $column;
 
-    protected $mappings = [
+    protected $defaults = [
         'attributes' =>
             [
                 'token'  => 'token',
@@ -50,8 +56,6 @@ abstract class TextCommanderListener
     {
         if (preg_match($this->regex, $this->event->shortMessage->message, $matches))
         {
-            $m = [];
-
             foreach ($matches as $k => $v)
             {
                 if (is_int($k))
@@ -60,34 +64,16 @@ abstract class TextCommanderListener
                 }
                 else
                 {
-                  $m[$this->mappings['attributes'][$k]] = $v;
+                    $this->setAttribute($this->attributes, $k, $v);
                 }
             }
-            $m = $this->insertMobile($m);
-
-            $matches = $this->insertMobile($matches);
-
-//            $this->attributes = $matches;
-            $this->attributes = $m;
+            $this->setAttribute($matches, 'mobile', $this->event->shortMessage->mobile); //for testing purposes
+            $this->setAttribute($this->attributes, 'mobile', $this->event->shortMessage->mobile);
 
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * Insert the mobile into the $matches because
-     * the mobile field is inherent to the msg.
-     *
-     * @param $matches
-     * @return mixed
-     */
-    private function insertMobile(&$matches)
-    {
-        $matches [$this->mappings['attributes']['mobile']] = $this->event->shortMessage->mobile;
-
-        return $matches;
     }
 
     /**
@@ -141,7 +127,7 @@ abstract class TextCommanderListener
                             throw new \Exception('The $this->repository cannot be null if token tag is present!');
                         if (!isset($column))
                             throw new \Exception('The $column cannot be null if token tag is present!');
-                        $keywords = implode('|', $this->repository->all()->pluck($column)->toArray());
+                        $keywords = implode('|', $this->repository->all()->pluck($column)->unique()->toArray());
                         $regex = preg_replace("/{(?<class>[^}]*)}/i", $keywords, $regex);
 
                         break;
@@ -164,4 +150,20 @@ abstract class TextCommanderListener
      * @return void
      */
     abstract protected function execute();
+
+    /**
+     * @param $k
+     * @param $v
+     */
+    protected function setAttribute(&$ar, $k, $v)
+    {
+        if (array_key_exists($k, $this->mappings['attributes']))
+        {
+            $ar[$this->mappings['attributes'][$k]] = $v;
+        }
+        elseif (array_key_exists($k, $this->defaults['attributes']))
+        {
+            $ar[$this->defaults['attributes'][$k]] = $v;
+        }
+    }
 }

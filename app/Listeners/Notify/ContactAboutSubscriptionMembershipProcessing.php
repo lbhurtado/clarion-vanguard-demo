@@ -19,7 +19,7 @@ class ContactAboutSubscriptionMembershipProcessing
      */
     public function handle(SubscriptionMembershipsWereProcessed $event)
     {
-        $job = new SendShortMessage($this->mobile, $info->description);
-        $this->dispatch($job);
+//        $job = new SendShortMessage($this->mobile, $info->description);
+//        $this->dispatch($job);
     }
 }

@@ -10,17 +10,23 @@ use App\Repositories\GroupRepository;
 
 class BroadcastRequest extends TextCommanderListener
 {
+    protected $regex = "/(?:(?:broadcast|send)\s*|@)(?<token>{App\Entities\Group})\s*(?<message>.*)/i";
 
-    protected $regex = "/(?:(?:broadcast|send)\s?|@)(?<group_alias>[^\s]+)\s?(?<message>.*)/i";
+    protected $column = 'alias';
 
-    private $groups;
+    protected $mappings = [
+        'attributes' => [
+            'token'   => 'keyword',
+            'message' => 'message'
+        ],
+    ];
 
     /**
-     * @param GroupRepository $groups
+     * @param GroupRepository $repository
      */
-    public function __construct(GroupRepository $groups)
+    public function __construct(GroupRepository $repository)
     {
-        $this->groups = $groups->skipPresenter();
+        $this->repository = $repository->skipPresenter();
     }
 
     /**
@@ -30,8 +36,8 @@ class BroadcastRequest extends TextCommanderListener
      */
     protected function execute()
     {
-        $group = $this->groups->findByAlias($this->group_alias)->first();
+        $group = $this->repository->findByAlias($this->attributes['keyword'])->first();
 
-        return $this->groups->generatePendingMessages($group, $this->message, $this->mobile);
+        return $this->repository->generatePendingMessages($group, $this->attributes['message'], $this->attributes['mobile']);
     }
 }
