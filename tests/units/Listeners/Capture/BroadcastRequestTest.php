@@ -45,7 +45,7 @@ class BroadcastRequestTest extends TestCase
 
             $short_message = factory(ShortMessage::class)->create([
                 'from'      => '09173011987',
-                'to'      => '09189362340',
+                'to'        => '09189362340',
                 'message'   => $message,
                 'direction' => INCOMING
             ]);

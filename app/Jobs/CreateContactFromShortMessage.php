@@ -26,11 +26,8 @@ class CreateContactFromShortMessage extends Job
      */
     public function handle(ContactRepository $contacts)
     {
-        if ($this->shortMessage)
+        if ($mobile = $this->shortMessage->mobile)
         {
-            $mobile = $this->shortMessage->mobile;
-
-//            $contacts->updateOrCreate(compact('mobile'), $this->shortMessage->attributesToArray());
             $contacts->updateOrCreate(compact('mobile'));
         }
     }

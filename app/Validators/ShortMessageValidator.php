@@ -9,10 +9,14 @@ class ShortMessageValidator extends LaravelValidator {
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-            'message'	=> 'required',
+            'message' => 'required',
+            'from'	  => 'phone:AUTO,PH',
+            'to'	  => 'phone:AUTO,PH',
         ],
         ValidatorInterface::RULE_UPDATE => [
-            'message'	=> 'required',
+            'message' => 'required',
+            'from'	  => 'phone:AUTO,PH',
+            'to'	  => 'phone:AUTO,PH',
         ],
    ];
 

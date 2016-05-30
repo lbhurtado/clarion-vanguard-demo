@@ -9,16 +9,16 @@ class TokenValidator extends LaravelValidator {
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-			'code'	=> 'required',
-			'class'	=> 'required',
+			'code'		=> 'required',
+			'class'		=> 'required',
 			'reference'	=> 'required|integer',
-			'quota' => 'integer|min:0',
+			'quota' 	=> 'integer|min:0',
 		],
         ValidatorInterface::RULE_UPDATE => [
-			'code'	=> 'required',
-			'class'	=> 'required',
+			'code'		=> 'required',
+			'class'		=> 'required',
 			'reference'	=> 'required|integer',
-			'quota' => 'integer|min:0',
+			'quota' 	=> 'integer|min:0',
 		],
    ];
 

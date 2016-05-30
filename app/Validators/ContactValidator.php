@@ -9,11 +9,11 @@ class ContactValidator extends LaravelValidator {
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-            'mobile'	=> 'required',
+            'mobile'	=> 'required|phone:AUTO,PH',
             'handle'	=> 'min:1',
 	],
         ValidatorInterface::RULE_UPDATE => [
-			'mobile'	=> 'required',
+			'mobile'	=> 'phone:AUTO,PH',
             'handle'	=> 'min:1',
 		],
    ];

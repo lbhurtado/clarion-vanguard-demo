@@ -58,11 +58,12 @@ class GroupRepositoryEloquent extends BaseRepository implements GroupRepository
         foreach($group->contacts as $contact)
         {
             $pendings->create([
-                'from' => $origin,
-                'to' => $contact->mobile,
+                'from'    => $origin,
+                'to'      => $contact->mobile,
                 'message' => $message,
-                'token' => $token
+                'token'   => $token
             ]);
+
         }
 
 //        event(new BroadcastWasRequested($group, $message, $origin, $token));

@@ -18,12 +18,14 @@ class BroadcastApprovedTest extends TestCase
     {
         factory(Pending::class)->create([
             'from'    => '09189362340',
+            'to'      => '+639178251991',
             'message' => 'The quick brown fox...',
             'token'   => '1234'
         ]);
 
         factory(Pending::class)->create([
             'from'    => '09189362340',
+            'to'      => '+639178251991',
             'message' => 'The quick brown fox...',
             'token'   => '1234'
         ]);

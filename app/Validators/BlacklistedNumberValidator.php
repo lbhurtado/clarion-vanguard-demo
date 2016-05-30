@@ -9,10 +9,10 @@ class BlacklistedNumberValidator extends LaravelValidator {
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-            'mobile'	=> 'required',
+            'mobile' => 'required|phone:AUTO,PH',
         ],
         ValidatorInterface::RULE_UPDATE => [
-            'mobile'	=> 'required',
+            'mobile' => 'required|phone:AUTO,PH',
         ],
    ];
 

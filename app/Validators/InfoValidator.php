@@ -9,12 +9,12 @@ class InfoValidator extends LaravelValidator {
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-			'code'	=>'	required',
-			'description'	=>'	required',
+			'code'			=> 'required',
+			'description'	=> 'required',
 		],
         ValidatorInterface::RULE_UPDATE => [
-			'code'	=>'	required',
-			'description'	=>'	required',
+			'code'			=> 'required',
+			'description'	=> 'required',
 		],
    ];
 

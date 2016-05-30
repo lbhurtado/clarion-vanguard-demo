@@ -30,37 +30,42 @@ $factory->define(App\Entities\Group::class, function (Faker\Generator $faker) {
 });
 
 $factory->define(App\Entities\Contact::class, function (Faker\Generator $faker) {
+    $faker->addProvider(new Faker\Provider\en_PH\PhoneNumber($faker));
     return [
-        'mobile' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'mobile' => $faker->mobileNumber,
         'handle' => $faker->userName,
     ];
 });
 
 $factory->define(App\Entities\ShortMessage::class, function (Faker\Generator $faker) {
+    $faker->addProvider(new Faker\Provider\en_PH\PhoneNumber($faker));
     return [
-        'from' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
-        'to' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'from' => $faker->mobileNumber,
+        'to' => $faker->mobileNumber,
         'message' => $faker->sentence,
         'direction' => INCOMING
     ];
 });
 
 $factory->define(App\Entities\BlacklistedNumber::class, function (Faker\Generator $faker) {
+    $faker->addProvider(new Faker\Provider\en_PH\PhoneNumber($faker));
     return [
-        'mobile' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'mobile' => $faker->mobileNumber,
     ];
 });
 
 $factory->define(App\Entities\WhitelistedNumber::class, function (Faker\Generator $faker) {
+    $faker->addProvider(new Faker\Provider\en_PH\PhoneNumber($faker));
     return [
-        'mobile' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'mobile' => $faker->mobileNumber,
     ];
 });
 
 $factory->define(App\Entities\Pending::class, function (Faker\Generator $faker) {
+    $faker->addProvider(new Faker\Provider\en_PH\PhoneNumber($faker));
     return [
-        'from' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
-        'to' => Mobile::number($faker->numberBetween(900,999) . $faker->numberBetween(1000000,9999999)),
+        'from' => $faker->mobileNumber,
+        'to' => $faker->mobileNumber,
         'message' => $faker->sentence,
         'token' => str_random(4),
     ];

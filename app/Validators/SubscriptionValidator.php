@@ -9,11 +9,11 @@ class SubscriptionValidator extends LaravelValidator {
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-			'code'	=> 'required',
+			'code'			=> 'required',
 			'description'	=> 'required',
 		],
         ValidatorInterface::RULE_UPDATE => [
-			'code'	=> 'required',
+			'code'			=> 'required',
 			'description'	=> 'required',
 		],
    ];
