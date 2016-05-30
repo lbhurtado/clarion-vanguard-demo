@@ -37,14 +37,6 @@ abstract class TextCommanderListener
     ];
 
     /**
-     * @param mixed $event
-     */
-    protected function setEvent($event)
-    {
-        $this->event = $event;
-    }
-
-    /**
      * Check if the message has the same pattern as the $this->regex.
      * Visibility is made public for testing purposes only.
      * &$matches parameter for testing purposes only.
@@ -86,7 +78,7 @@ abstract class TextCommanderListener
      */
     public function handle(ShortMessageWasRecorded $event)
     {
-        $this->setEvent($event);
+        $this->event = $event;
 
         if (is_null($this->repository))
             throw new \Exception('$this->repository cannot be null');

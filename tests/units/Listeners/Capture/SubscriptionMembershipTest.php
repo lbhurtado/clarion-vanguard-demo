@@ -51,10 +51,10 @@ class SubscriptionMembershipTest extends TestCase
 
         $this->assertEquals(Mobile::number('09173011987'), $subscription2->contacts->first()->mobile);
         $this->assertEquals("Lester '92", $subscription2->contacts->first()->handle);
-//        $this->seeInDatabase($group2->contacts()->getTable(), [
-//            'group_id' => $group2->id,
-//            'contact_id' => $contact->id
-//        ]);
+        $this->seeInDatabase($subscription2->contacts()->getTable(), [
+            'subscription_id' => $subscription2->id,
+            'contact_id' => $short_message->contact->id
+        ]);
     }
 
     /** test */

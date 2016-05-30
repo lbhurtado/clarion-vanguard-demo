@@ -38,21 +38,29 @@ class GroupMembershipTest extends TestCase
             'direction' => INCOMING
         ]);
 
+
+        $short_message = factory(ShortMessage::class)->create([
+            'from'      => '09173011987',
+            'message'   => "uppa Lester '91",
+            'direction' => INCOMING
+        ]);
+
         $listener = $this->app->make(GroupMembership::class);
         $listener->handle(new ShortMessageWasRecorded($short_message));
 
         $this->assertTrue($listener->regexMatches($attributes));
         $this->assertEquals('uppa', $attributes['token']);
         $this->assertEquals(Mobile::number('09173011987'), $attributes['mobile']);
-        $this->assertEquals("Lester '92", $attributes['handle']);
+        $this->assertEquals("Lester '91", $attributes['handle']);
 
         $this->assertCount(1, $group2->contacts);
 
         $this->assertEquals(Mobile::number('09173011987'), $group2->contacts->first()->mobile);
-        $this->assertEquals("Lester '92", $group2->contacts->first()->handle);
-//        $this->seeInDatabase($group2->contacts()->getTable(), [
-//            'group_id' => $group2->id,
-//            'contact_id' => $contact->id
-//        ]);
+        $this->assertEquals("Lester '91", $group2->contacts->first()->handle);
+
+        $this->seeInDatabase($group2->contacts()->getTable(), [
+            'group_id' => $group2->id,
+            'contact_id' => $short_message->contact->id
+        ]);
     }
 }

@@ -30,7 +30,8 @@ class CreateContactFromShortMessage extends Job
         {
             $mobile = $this->shortMessage->mobile;
 
-            $contacts->updateOrCreate(compact('mobile'), $this->shortMessage->attributesToArray());
+//            $contacts->updateOrCreate(compact('mobile'), $this->shortMessage->attributesToArray());
+            $contacts->updateOrCreate(compact('mobile'));
         }
     }
 }

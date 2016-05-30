@@ -14,6 +14,10 @@ class JoinUnit extends Job
 
     protected $event;
 
+    protected $contacts;
+
+    protected $units;
+
     protected $mappings = [
         'fields' =>
             [
@@ -49,9 +53,12 @@ class JoinUnit extends Job
      * @param ContactRepository $contacts
      * @return mixed
      * @throws \Exception
+     * @deprecated
      */
     protected function getProspect(ContactRepository $contacts)
     {
+        $this->contacts = $contacts->skipPresenter(); //this is needed to make sure the tests will not break
+
         $field = $this->mappings['fields']['contact'];
         $value = Mobile::number($this->attributes[$this->mappings['values']['mobile']]);
         $contact = $contacts->findByField($field, $value)->first();
@@ -61,10 +68,23 @@ class JoinUnit extends Job
         return $contact;
     }
 
+    protected function setupContacts(ContactRepository $contacts, &$prospect)
+    {
+        $this->contacts = $contacts->skipPresenter();
+
+        $field = $this->mappings['fields']['contact'];
+        $value = Mobile::number($this->attributes[$this->mappings['values']['mobile']]);
+        $prospect = $contacts->findByField($field, $value)->first();
+        if (is_null($prospect))
+            throw new \Exception("Contact with {$value} does not exists!");
+
+    }
+
     /**
      * @param RepositoryInterface $units
      * @return mixed
      * @throws \Exception
+     * @deprecated
      */
     protected function getUnit(RepositoryInterface $units)
     {
@@ -77,20 +97,25 @@ class JoinUnit extends Job
         return $units->findByField($field, $value)->first();
     }
 
+    protected function setupUnits(RepositoryInterface $units, &$unit)
+    {
+        $this->units = $units;
+
+        $field = $this->mappings['fields']['unit'];
+        $value = $this->attributes[$this->mappings['values']['token']];
+        $unit = $units->findByField($field, $value)->first();
+        if (is_null($unit))
+            throw new \Exception("Unit with {$value} does not exists!");
+    }
+
     /**
      * @param Contact $contact
      * @param $handle
      */
     protected function updateHandle(Contact $contact, $handle)
     {
-        if (!is_null($handle)) {
-            if ($contact->handle != $handle)
-            {
-                $contact->handle = $handle;
-                $contact->save();
-                $this->handleModified = true;
-            }
-        }
+        $mobile = $contact->mobile;
+        $this->contacts->update(compact('mobile', 'handle'), $contact->id);
     }
 
     /**

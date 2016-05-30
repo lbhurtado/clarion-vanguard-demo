@@ -5,6 +5,7 @@ namespace App\Entities;
 use Prettus\Repository\Traits\TransformableTrait;
 use Prettus\Repository\Contracts\Transformable;
 use Illuminate\Database\Eloquent\Model;
+use App\Entities\Contact;
 use App\Instruction;
 
 define('INCOMING', -1);
@@ -42,6 +43,11 @@ class ShortMessage extends Model implements Transformable
 		parent::__construct($attributes);
 
 		$this->instruction = Instruction::create($this);
+	}
+
+	public function contact()
+	{
+		return $this->belongsTo(Contact::class, 'from', 'mobile');
 	}
 
 	public function getInstruction()

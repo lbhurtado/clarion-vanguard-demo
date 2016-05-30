@@ -27,7 +27,7 @@ class JoinGroupTest extends TestCase
         $this->assertCount(0, $groups->find($group->id)->contacts);
 
         $attributes = [
-            'keyword' => $group->alias,
+            'token' => $group->alias,
             'mobile' => $contact->mobile,
             'handle' => $contact->handle,
         ];
