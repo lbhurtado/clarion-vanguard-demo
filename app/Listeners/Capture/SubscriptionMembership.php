@@ -14,7 +14,7 @@ class SubscriptionMembership extends TextCommanderListener
 
     protected $mappings = [
         'attributes' => [
-            'token'  => 'keyword',
+            'token'  => 'token',
         ],
     ];
 

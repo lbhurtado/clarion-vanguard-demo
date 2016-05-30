@@ -14,51 +14,45 @@ class RecordShortMessageTest extends TestCase
     /** @test */
     function record_short_message_does_the_job()
     {
-        list($from, $to, $message, $direction) = ['09173011987', '09189362340', 'The quick brown fox...', INCOMING];
-
+         list($from, $to, $message, $direction) =
+             [
+                 Mobile::number('09173011987'),
+                 Mobile::number('09189362340'),
+                 'The quick brown fox...',
+                 INCOMING
+             ];
         $job = new RecordShortMessage($from, $to, $message, $direction);
         $this->dispatch($job);
-        $short_message = $this->app->make(ShortMessageRepository::class)->skipPresenter()->findWhere([
-            'from'      => Mobile::number('09173011987'),
-            'to'        => Mobile::number('09189362340'),
-            'message'   => 'The quick brown fox...',
-            'direction' => INCOMING
-        ])->first();
-
-        $this->assertInstanceOf(ShortMessage::class,  $short_message);
-        $this->assertEquals(Mobile::number('09173011987'),  $short_message->from);
-        $this->assertEquals(Mobile::number('09189362340'),  $short_message->to);
-        $this->assertEquals('The quick brown fox...',       $short_message->message);
-        $this->assertEquals(INCOMING,                       $short_message->direction);
-        $this->seeInDatabase($short_message->getTable(), [
-            'from'      => Mobile::number('09173011987'),
-            'to'        => Mobile::number('09189362340'),
-            'message'   => "The quick brown fox...",
-            'direction' => INCOMING
-        ]);
+        $attributes = compact('from','to','message', 'direction');
+        $short_message = $this->app->make(ShortMessageRepository::class)
+            ->findWhere($attributes)
+            ->first();
+        $this->assertInstanceOf(ShortMessage::class, $short_message);
+        $this->assertEquals($from, $short_message->from);
+        $this->assertEquals($to, $short_message->to);
+        $this->assertEquals($message, $short_message->message);
+        $this->assertEquals($direction, $short_message->direction);
+        $this->seeInDatabase($short_message->getTable(), $attributes);
     }
 
     /** @test */
     function record_short_message_creates_singleton_instance()
     {
-        list($from, $to, $message, $direction) = ['09173011987', '09189362340', 'The quick brown fox...', INCOMING];
-
+        list($from, $to, $message, $direction) =
+            [
+                Mobile::number('09173011987'),
+                Mobile::number('09189362340'),
+                'The quick brown fox...',
+                INCOMING
+            ];
         $job = new RecordShortMessage($from, $to, $message, $direction);
         $this->dispatch($job);
-
-        $short_message = $this->app->make(ShortMessage::class);
-
-        $this->assertInstanceOf(ShortMessage::class,  $short_message);
-
-        $this->assertEquals(Mobile::number('09173011987'),  $short_message->from);
-        $this->assertEquals(Mobile::number('09189362340'),  $short_message->to);
-        $this->assertEquals('The quick brown fox...',       $short_message->message);
-        $this->assertEquals(INCOMING,                       $short_message->direction);
-        $this->seeInDatabase($short_message->getTable(), [
-            'from'      => Mobile::number('09173011987'),
-            'to'        => Mobile::number('09189362340'),
-            'message'   => "The quick brown fox...",
-            'direction' => INCOMING
-        ]);
+        $short_message = $this->app->make(ShortMessage::class); //this is the singleton instance
+        $this->assertInstanceOf(ShortMessage::class, $short_message);
+        $this->assertEquals($from, $short_message->from);
+        $this->assertEquals($to, $short_message->to);
+        $this->assertEquals($message, $short_message->message);
+        $this->assertEquals($direction, $short_message->direction);
+        $this->seeInDatabase($short_message->getTable(), compact('from','to','message', 'direction'));
     }
 }

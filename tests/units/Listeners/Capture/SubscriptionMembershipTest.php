@@ -43,6 +43,7 @@ class SubscriptionMembershipTest extends TestCase
         $listener->handle(new ShortMessageWasRecorded($short_message));
 
         $this->assertTrue($listener->regexMatches($attributes));
+
         $this->assertEquals('about', $attributes['token']);
         $this->assertEquals(Mobile::number('09173011987'), $attributes['mobile']);
         $this->assertEquals("Lester '92", $attributes['handle']);

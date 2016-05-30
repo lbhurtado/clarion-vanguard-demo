@@ -100,7 +100,6 @@ class JoinUnit extends Job
     protected function setupUnits(RepositoryInterface $units, &$unit)
     {
         $this->units = $units;
-
         $field = $this->mappings['fields']['unit'];
         $value = $this->attributes[$this->mappings['values']['token']];
         $unit = $units->findByField($field, $value)->first();

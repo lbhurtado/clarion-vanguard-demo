@@ -3,6 +3,7 @@
 return [
     'driver' => env('DEFAULT_SMS_DRIVER', 'log'),
     'from' => 'Your Number or Email',
+    'pretend' => true,
     'telerivet' => [
         'api_key'    => env('TELERIVET_API_KEY'),
         'project_id' => env('TELERIVET_PROJECT_ID'),

@@ -4,9 +4,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use App\Repositories\ContactRepository;
 use App\Repositories\SubscriptionRepository;
-use App\Entities\ShortMessage;
+use App\Repositories\ContactRepository;
 use App\Jobs\JoinSubscription;
 use App\Mobile;
 
@@ -19,32 +18,21 @@ class JoinSubscriptionTest extends TestCase
     {
         $subscriptions = $this->app->make(SubscriptionRepository::class);
         $contacts = $this->app->make(ContactRepository::class);
-        $code = 'news';
-        $description = 'News Description';
+        list($code, $description) = ['news', 'News Description'];
         $subscription = $subscriptions->create(compact('code', 'description'));
-        $mobile = '09173011987';
-        $contact = $contacts->create(['mobile' => $mobile, 'handle' => "Lester '91"]);
-
+        list($mobile, $handle) = [Mobile::number('09173011987'), "Lester '91" ];
+        $contact = $contacts->create(compact('mobile', 'handle'));
         $this->assertCount(0, $subscriptions->find($subscription->id)->contacts);
-
-        $attributes = [
-            'keyword' => $subscription->code,
-            'mobile' => $contact->mobile,
-            'handle' => $contact->handle,
-        ];
-
-        $job = new JoinSubscription($attributes);
-        $this->dispatch($job);
-
+        $token = $subscription->code;
+        $attributes = compact('token', 'mobile', 'handle');
+        for ($i = 0; $i <= 5; $i++)
+        {
+            $job = new JoinSubscription($attributes);
+            $this->dispatch($job);
+        }
         $this->assertCount(1, $subscriptions->find($subscription->id)->contacts);
-
-        $job = new JoinSubscription($attributes);
-        $this->dispatch($job);
-
-        $this->assertCount(1, $subscriptions->find($subscription->id)->contacts);
-
-        $this->assertEquals(Mobile::number('09173011987'), $subscription->contacts->first()->mobile);
-        $this->assertEquals("Lester '91", $subscription->contacts->first()->handle);
+        $this->assertEquals($mobile, $subscription->contacts->first()->mobile);
+        $this->assertEquals($handle, $subscription->contacts->first()->handle);
         $this->seeInDatabase($subscription->contacts()->getTable(), [
             'subscription_id' => $subscription->id,
             'contact_id' => $contact->id

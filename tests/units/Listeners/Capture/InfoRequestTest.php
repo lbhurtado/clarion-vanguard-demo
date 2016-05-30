@@ -17,12 +17,12 @@ class InfoRequestTest extends TestCase
     /** @test */
     function info_request_is_listening()
     {
-        factory(Info::class)->create(['code' => 'info', 'description' => 'info description']);
-        factory(Info::class)->create(['code' => 'about', 'description' => 'about description']);
+        factory(Info::class)->create(['code' => 'info1', 'description' => 'info1 description']);
+        factory(Info::class)->create(['code' => 'info2', 'description' => 'info2 description']);
 
-//        $this->expectsEvents(ShortMessageWasRecorded::class);
+        $this->expectsEvents(ShortMessageWasRecorded::class);
 
-        $from = $mobile = '09173011987';
+        $from = $mobile = Mobile::number('09173011987');
         $codes = $this->app->make(InfoRepository::class)->skipPresenter()->all()->pluck('code')->toArray();
         foreach ($codes as $code)
         {
@@ -30,11 +30,10 @@ class InfoRequestTest extends TestCase
             $short_message = factory(ShortMessage::class)->create(compact('from', 'message'));
             $listener = new InfoRequest(\App::make(InfoRepository::class));
             $listener->handle(new ShortMessageWasRecorded($short_message));
-
             $this->assertTrue($listener->regexMatches($attributes));
             $this->assertEquals($code, $attributes['token']);
         }
 
-        $this->assertEquals(Mobile::number('09173011987'), $attributes['mobile']);
+        $this->assertEquals($mobile, $attributes['mobile']);
     }
 }

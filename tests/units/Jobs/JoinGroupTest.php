@@ -6,7 +6,6 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use App\Repositories\ContactRepository;
 use App\Repositories\GroupRepository;
-use App\Entities\ShortMessage;
 use App\Jobs\JoinGroup;
 use App\Mobile;
 
@@ -19,31 +18,21 @@ class JoinGroupTest extends TestCase
     {
         $groups = $this->app->make(GroupRepository::class);
         $contacts = $this->app->make(ContactRepository::class);
-        $name = $alias = 'vanguard';
+        $token = $name = $alias = 'vanguard';
         $group = $groups->create(compact('name','alias'));
-        $mobile = '09173011987';
-        $contact = $contacts->create(['mobile' => $mobile, 'handle' => "Lester '92"]);
-
+        $mobile = Mobile::number('09173011987');
+        $handle =  "Lester '91";
+        $contact = $contacts->create(compact('mobile', 'handle'));
         $this->assertCount(0, $groups->find($group->id)->contacts);
-
-        $attributes = [
-            'token' => $group->alias,
-            'mobile' => $contact->mobile,
-            'handle' => $contact->handle,
-        ];
-
-        $job = new JoinGroup($attributes);
-        $this->dispatch($job);
-
+        $attributes = compact('token', 'mobile', 'handle');
+        for ($i = 0; $i <= 5; $i++)
+        {
+            $job = new JoinGroup($attributes);
+            $this->dispatch($job);
+        }
         $this->assertCount(1, $groups->find($group->id)->contacts);
-
-        $job = new JoinGroup($attributes);
-        $this->dispatch($job);
-
-        $this->assertCount(1, $groups->find($group->id)->contacts);
-
-        $this->assertEquals(Mobile::number('09173011987'), $group->contacts->first()->mobile);
-        $this->assertEquals("Lester '92", $group->contacts->first()->handle);
+        $this->assertEquals($mobile, $group->contacts->first()->mobile);
+        $this->assertEquals($handle, $group->contacts->first()->handle);
         $this->seeInDatabase($group->contacts()->getTable(), [
             'group_id' => $group->id,
             'contact_id' => $contact->id

@@ -8,7 +8,6 @@ use App\Repositories\SubscriptionRepository;
 
 class JoinSubscription extends JoinUnit
 {
-    protected $column = 'code';
     protected $event = SubscriptionMembershipsWereProcessed::class;
 
     /**
@@ -18,15 +17,15 @@ class JoinSubscription extends JoinUnit
     public function handle(ContactRepository $contacts, SubscriptionRepository $units)
     {
         $this->mappings['fields']['unit'] = 'code';
-        $this->mappings['values']['token'] = 'keyword';
 
-        $prospect = $this->getProspect($contacts);
-        $unit = $this->getUnit($units);
-
-        if ($unit) {
-            $handle = $this->attributes[$this->mappings['values']['handle']];
+        $this->setupContacts($contacts, $prospect);
+        $this->setupUnits($units, $unit);
+        
+        if ($handle = $this->attributes[$this->mappings['values']['handle']])
+        {
             $this->updateHandle($prospect, $handle);
-            $this->joinUnit($unit, $prospect);
         }
+
+        $this->joinUnit($unit, $prospect);
     }
 }
