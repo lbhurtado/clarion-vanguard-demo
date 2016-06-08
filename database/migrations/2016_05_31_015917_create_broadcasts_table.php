@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePendingsTable extends Migration
+class CreateBroadcastsTable extends Migration
 {
 
 	/**
@@ -13,12 +13,15 @@ class CreatePendingsTable extends Migration
 	 */
 	public function up()
 	{
-		Schema::create('pendings', function(Blueprint $table) {
+		Schema::create('broadcasts', function(Blueprint $table) {
             $table->increments('id');
-			$table->string('code')->unique();
-			$table->integer('contact_id')->unsigned()->index()->nullable()	;
+			$table->integer('pending_id')->unsigned()->index();
+			$table->string('from')->nullable()->index();
+			$table->string('to')->index();
+			$table->text('message');
             $table->timestamps();
 			$table->softDeletes();
+			$table->unique(['pending_id', 'to']);
 		});
 	}
 
@@ -29,7 +32,7 @@ class CreatePendingsTable extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('pendings');
+		Schema::drop('broadcasts');
 	}
 
 }

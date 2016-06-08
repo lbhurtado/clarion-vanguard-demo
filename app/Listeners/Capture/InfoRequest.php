@@ -3,29 +3,38 @@
 namespace App\Listeners\Capture;
 
 use App\Listeners\TextCommanderListener;
+use App\Repositories\ContactRepository;
+use App\Repositories\TokenRepository;
 use App\Repositories\InfoRepository;
 use App\Jobs\SendShortMessage;
 
 class InfoRequest extends TextCommanderListener
 {
+    public static $i = 0;
     protected $regex = "/(?<token>{App\Entities\Info})\s?(?<arguments>.*)/i";
 
     protected $column = 'code';
 
+    private $tokens;
+
+    private $contacts;
+
     protected $mappings = [
         'attributes' => [
-            'token'  => 'keyword',
+            'token'  => 'token',
         ],
     ];
 
     /**
-     *
-     * InfoRequest constructor.
-     * @param $repository
+     * @param InfoRepository $repository
+     * @param TokenRepository $tokens
+     * @param ContactRepository $contacts
      */
-    public function __construct(InfoRepository $repository)
+    public function __construct(InfoRepository $repository, TokenRepository $tokens, ContactRepository $contacts)
     {
         $this->repository = $repository;
+        $this->tokens = $tokens;
+        $this->contacts = $contacts;
     }
 
     /**
@@ -35,11 +44,18 @@ class InfoRequest extends TextCommanderListener
      */
     protected function execute()
     {
-        $info = $this->repository->findByCode($this->attributes['keyword'])->first();
-        if (!is_null($info))
+        $token = $this->attributes['token'];
+        $contact = $this->contacts->findByField('mobile', $this->attributes['mobile'])->first();
+        if (!is_null($contact))
         {
-            $job = new SendShortMessage($this->attributes['mobile'], $info->description);
-            $this->dispatch($job);
+            $info =  $this->tokens->claim($contact, $token, function($info) use ($token, $contact) {
+//                $job = new SendShortMessage($contact->mobile, $info->description);
+//                $this->dispatch($job);
+
+                return $info;
+            });
+
+            return $info;
         }
     }
 

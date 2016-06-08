@@ -9,16 +9,10 @@ class PendingValidator extends LaravelValidator {
 
     protected $rules = [
         ValidatorInterface::RULE_CREATE => [
-			'from'	  => 'required|phone:AUTO,PH',
-			'to'	  => 'required|phone:AUTO,PH',
-			'message' => 'required',
-			'token'	  => 'required',
+			'code' => 'required',
 		],
         ValidatorInterface::RULE_UPDATE => [
-			'from'	  => 'required|phone:AUTO,PH',
-			'to'	  => 'required|phone:AUTO,PH',
-			'message' => 'required',
-			'token'	  => 'required',
+			'code' => 'required',
 		],
    ];
 

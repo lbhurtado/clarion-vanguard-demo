@@ -3,12 +3,13 @@
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use App\Repositories\BroadcastRepository;
 use App\Repositories\PendingRepository;
 use App\Repositories\GroupRepository;
+use App\Criteria\PendingCodeCriterion;
 use App\Entities\Contact;
 use App\Entities\Group;
 use App\Mobile;
-
 
 class GroupTest extends TestCase
 {
@@ -56,37 +57,25 @@ class GroupTest extends TestCase
     /** @test */
     function group_can_create_pending_messages()
     {
-        $this->artisan('db:seed');
         $groups = $this->app->make(GroupRepository::class)->skipPresenter();
-        $group = $groups->findByField('name','brods')->first();
+        $group = $groups->create(['name' => 'UP Vanguard', 'alias' => 'vanguard']);
+        $cnt = 3;
+        for ($i=1;$i<=$cnt;$i++)
+        {
+            $group->contacts()->attach(factory(Contact::class)->create());
+        }
+        $message = 'group can create pending messages';
+        $origin = Mobile::number('09173011987');
 
-        $contact1 = factory(Contact::class)->create();
-        $contact2 = factory(Contact::class)->create();
-        $group->contacts()->attach($contact1);
-        $group->contacts()->attach($contact2);
+        $code = $groups->generatePendingMessages($group, $message, $origin);
+        $pending_broadcasts = $this->app->make(BroadcastRepository::class)->skipPresenter();
+        $this->assertCount($cnt, $pending_broadcasts->getByCriteria(new PendingCodeCriterion($code)));
+        $pending_broadcast = $pending_broadcasts->find(1);
 
-        $message = 'request';
-        $origin = '09173011987';
-        $contact3 = factory(Contact::class)->create(['mobile' => $origin, 'handle' => "origin"]);
-
-        $pendings = $this->app->make(PendingRepository::class)->skipPresenter();
-
-        $token = $groups->generatePendingMessages($group, $message, $origin);
-
-        $this->assertCount(2, $pendings->all());
-        $pending1 = $pendings->find(1);
-        $pending2 = $pendings->find(2);
-        $this->seeInDatabase($pending1->getTable(), [
-            'from' => Mobile::number($origin),
-            'to' => Mobile::number($contact1->mobile),
-            'message' => $message,
-            'token' => $token
-        ]);
-        $this->seeInDatabase($pending2->getTable(), [
-            'from' => Mobile::number($origin),
-            'to' => Mobile::number($contact2->mobile),
-            'message' => $message,
-            'token' => $token
+        $this->seeInDatabase($pending_broadcast->getTable(), [
+            'pending_id' => $pending_broadcast->pending->id,
+                  'from' => $origin,
+               'message' => $message,
         ]);
     }
 }

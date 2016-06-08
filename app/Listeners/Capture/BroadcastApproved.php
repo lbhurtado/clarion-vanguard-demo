@@ -2,19 +2,25 @@
 
 namespace App\Listeners\Capture;
 
+use App\Listeners\Notify\ContactAboutBroadcastApproval;
+use App\Listeners\Relay\ToOthersAboutBroadcastApproval;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Repositories\BroadcastRepository;
 use Illuminate\Queue\InteractsWithQueue;
 use App\Listeners\TextCommanderListener;
 use App\Repositories\PendingRepository;
-use App\Criteria\TokenCriterion;
+use App\Jobs\BroadcastPendingMessages;
+use App\Criteria\PendingCodeCriterion;
+use App\Criteria\CodeCriterion;
 use App\Jobs\SendShortMessage;
+
 
 class BroadcastApproved extends TextCommanderListener
 {
-    protected $regex = "/(approve)\s?(?<token>{App\Entities\Subscription})\s?(?<arguments>.*)/i";
+    protected $regex = "/(approve)\s?(?<token>{App\Entities\Pending})\s?(?<arguments>.*)/i";
 
-    protected $column = 'token';
+    protected $column = 'code';
 
     protected $mappings = [
         'attributes' => [
@@ -23,11 +29,11 @@ class BroadcastApproved extends TextCommanderListener
     ];
 
     /**
-     * @param $repository
+     * @param PendingRepository $repository
      */
     public function __construct(PendingRepository $repository)
     {
-        $this->repository = $repository->skipPresenter();
+        $this->repository = $repository->skipPresenter(true);
     }
 
     /**
@@ -37,14 +43,11 @@ class BroadcastApproved extends TextCommanderListener
      */
     protected function execute()
     {
-        $pendings = $this->repository->getByCriteria(new TokenCriterion($this->attributes['token']))->all();
-        foreach($pendings as $pending)
-        {
-            $job = new SendShortMessage($pending->to, $pending->message);
-
-            $this->dispatch($job);
-            $pending->delete();
-        }
+        event(new ContactAboutBroadcastApproval());
+        event(new ToOthersAboutBroadcastApproval());
+        $pending = $this->repository->getByCriteria(new CodeCriterion($this->attributes['token']))->first();
+        $job = new BroadcastPendingMessages($pending);
+        $this->dispatch($job);
     }
 
 }

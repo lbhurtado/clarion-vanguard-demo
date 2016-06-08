@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\WhitelistedNumberNotDetected;
 use App\Events\BlacklistedNumberDetected;
+use App\Listeners\Capture\BroadcastApproved;
 use Illuminate\Support\ServiceProvider;
 use App\Events\ShortMessageWasRecorded;
 use App\Entities\BlacklistedNumber;
@@ -11,7 +12,7 @@ use App\Entities\WhitelistedNumber;
 use App\Events\ContactWasCreated;
 use App\Entities\ShortMessage;
 use App\Entities\Contact;
-use App\Entities\Pending;
+use App\Entities\Broadcast;
 use App\Entities\Group;
 use App\Entities\Info;
 use App\Mobile;
@@ -63,7 +64,7 @@ class ModelServiceProvider extends ServiceProvider
             $model->alias = strtolower($model->alias);
         });
 
-        Pending::creating(function ($model) {
+        Broadcast::creating(function ($model) {
             $model->from = Mobile::number($model->from);
             $model->to   = Mobile::number($model->to);
         });

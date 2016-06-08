@@ -1,5 +1,6 @@
 <?php
 
+use App\Listeners\Capture\Contact as CaptureContactListener;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
@@ -32,12 +33,13 @@ class GroupMembershipTest extends TestCase
 
         Token::generate($group2, 'uppa');
 
+        $this->expectsEvents(ShortMessageWasRecorded::class);
+
         $short_message = factory(ShortMessage::class)->create([
             'from'      => '09173011987',
             'message'   => "uppa Lester '92",
             'direction' => INCOMING
         ]);
-
 
         $short_message = factory(ShortMessage::class)->create([
             'from'      => '09173011987',
@@ -45,8 +47,12 @@ class GroupMembershipTest extends TestCase
             'direction' => INCOMING
         ]);
 
+        $capture_contact_listener = $this->app->make(CaptureContactListener::class);
+        $event = new ShortMessageWasRecorded($short_message);
+        $capture_contact_listener->handle($event);
+
         $listener = $this->app->make(GroupMembership::class);
-        $listener->handle(new ShortMessageWasRecorded($short_message));
+        $listener->handle($event);
 
         $this->assertTrue($listener->regexMatches($attributes));
         $this->assertEquals('uppa', $attributes['token']);

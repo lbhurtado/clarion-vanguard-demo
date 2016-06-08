@@ -15,10 +15,10 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         \App\Events\ShortMessageWasRecorded::class => [
             \App\Listeners\Capture\Contact::class,
+            \App\Listeners\Capture\InfoRequest::class,
 //            \App\Listeners\Capture\GroupMembership::class,
 //            \App\Listeners\Capture\BroadcastRequest::class,
 //            \App\Listeners\Capture\BroadcastApproved::class,
-//            \App\Listeners\Capture\InfoRequest::class,
 //            \App\Listeners\Capture\SubscriptionMembership::class,
         ],
         'App\Events\BlacklistedNumberDetected' => [
@@ -54,6 +54,10 @@ class EventServiceProvider extends ServiceProvider
 //        'App\Events\BroadcastWasSent' => [
 //            'App\Listeners\Notify\ContactAboutBroadcastSending',
 //            'App\Listeners\Relay\ToOthersAboutBroadcastSending',
+//        ],
+//        'App\Events\InfoWasRequested' => [
+//            'App\Listeners\Notify\ContactAboutInfoRequest',
+//            'App\Listeners\Relay\ToOthersAboutInfoRequest',
 //        ],
     ];
 

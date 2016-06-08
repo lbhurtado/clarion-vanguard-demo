@@ -6,6 +6,7 @@ use Prettus\Repository\Traits\TransformableTrait;
 use Prettus\Repository\Contracts\Transformable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use App\Repositories\PendingRepository;
 
 class Token extends Model implements Transformable
 {
@@ -83,5 +84,13 @@ class Token extends Model implements Transformable
 	public static function generateOneTime(Model $model, $code = null)
 	{
 		return static::generate($model, $code, 1);
+	}
+
+	public static function generatePending($code = null)
+	{
+		$code = $code ?: str_random(6);
+		$pending = \App::make(PendingRepository::class)->skipPresenter()->create(compact('code'));
+
+		return static::generateOneTime($pending, $code);
 	}
 }

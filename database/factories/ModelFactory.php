@@ -61,16 +61,6 @@ $factory->define(App\Entities\WhitelistedNumber::class, function (Faker\Generato
     ];
 });
 
-$factory->define(App\Entities\Pending::class, function (Faker\Generator $faker) {
-    $faker->addProvider(new Faker\Provider\en_PH\PhoneNumber($faker));
-    return [
-        'from' => $faker->mobileNumber,
-        'to' => $faker->mobileNumber,
-        'message' => $faker->sentence,
-        'token' => str_random(4),
-    ];
-});
-
 $factory->define(App\Entities\Info::class, function (Faker\Generator $faker) {
     return [
         'code' => $faker->word,
@@ -82,5 +72,23 @@ $factory->define(App\Entities\Subscription::class, function (Faker\Generator $fa
     return [
         'code' => $faker->word,
         'description' => $faker->sentence
+    ];
+});
+
+$factory->define(App\Entities\Pending::class, function (Faker\Generator $faker) {
+    return [
+        'code' => $faker->word,
+    ];
+});
+
+$factory->define(App\Entities\Broadcast::class, function (Faker\Generator $faker) {
+    $faker->addProvider(new Faker\Provider\en_PH\PhoneNumber($faker));
+    return [
+        'pending_id' => function () {
+            return factory(App\Entities\Pending::class)->create()->id;
+        },
+        'from' => $faker->mobileNumber,
+        'to' => $faker->mobileNumber,
+        'message' => $faker->sentence,
     ];
 });

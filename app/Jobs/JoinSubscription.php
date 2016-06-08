@@ -20,7 +20,7 @@ class JoinSubscription extends JoinUnit
 
         $this->setupContacts($contacts, $prospect);
         $this->setupUnits($units, $unit);
-        
+
         if ($handle = $this->attributes[$this->mappings['values']['handle']])
         {
             $this->updateHandle($prospect, $handle);

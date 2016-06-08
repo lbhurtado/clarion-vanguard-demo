@@ -52,7 +52,7 @@ abstract class TextCommanderListener
             {
                 if (is_int($k))
                 {
-                    unset($matches[$k]);
+                    unset($matches[$k]); //for testing purposes
                 }
                 else
                 {
@@ -119,8 +119,12 @@ abstract class TextCommanderListener
                             throw new \Exception('The $this->repository cannot be null if token tag is present!');
                         if (!isset($column))
                             throw new \Exception('The $column cannot be null if token tag is present!');
-                        $keywords = implode('|', $this->repository->all()->pluck($column)->unique()->toArray());
-                        $regex = preg_replace("/{(?<class>[^}]*)}/i", $keywords, $regex);
+                        $columns = $this->repository->all()->pluck($column)->unique()->toArray();
+                        if (count($columns)>0)
+                        {
+                            $keywords = implode('|', $columns);
+                            $regex = preg_replace("/{(?<class>[^}]*)}/i", $keywords, $regex);
+                        }
 
                         break;
                 }

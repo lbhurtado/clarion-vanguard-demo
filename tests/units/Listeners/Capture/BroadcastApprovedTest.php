@@ -1,13 +1,14 @@
 <?php
 
-use Illuminate\Foundation\Testing\DatabaseTransactions;
+use App\Listeners\Notify\ContactAboutBroadcastApproval;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use App\Listeners\Capture\BroadcastApproved;
+use App\Repositories\BroadcastRepository;
 use App\Events\ShortMessageWasRecorded;
-use App\Repositories\PendingRepository;
+use App\Criteria\PendingCodeCriterion;
 use App\Entities\ShortMessage;
-use App\Entities\Pending;
+use App\Entities\Broadcast;
+use App\Entities\Token;
 
 class BroadcastApprovedTest extends TestCase
 {
@@ -16,35 +17,31 @@ class BroadcastApprovedTest extends TestCase
     /** @test */
     function broadcast_approved_is_listening()
     {
-        factory(Pending::class)->create([
-            'from'    => '09189362340',
-            'to'      => '+639178251991',
-            'message' => 'The quick brown fox...',
-            'token'   => '1234'
-        ]);
+        $cnt = 5;
+        $message = "BroadcastApprovedTest::broadcast_approved_is_listening";
 
-        factory(Pending::class)->create([
-            'from'    => '09189362340',
-            'to'      => '+639178251991',
-            'message' => 'The quick brown fox...',
-            'token'   => '1234'
-        ]);
+        $code = '1234';
+        $token = Token::generatePending($code);
+        $pending_id = $token->conjureObject()->getObject()->id;
+        for ($i=1;$i<=$cnt;$i++)
+        {
+            factory(Broadcast::class)->create(compact('pending_id','message'));
+        }
+        $broadcasts = $this->app->make(BroadcastRepository::class)->skipPresenter();
 
-        $pendings = $this->app->make(PendingRepository::class);
+        $this->assertCount($cnt, $broadcasts->getByCriteria(new PendingCodeCriterion($code))->all());
 
-        $this->assertCount(2, $pendings->all()['data']);
+        $origin = $from = \App\Mobile::number(env('MASTER'));
+        $message = "approve {$code}";
+        $short_message = factory(ShortMessage::class)->create(compact('from','message'));
+        $this->assertEquals($origin, $short_message->mobile);
+        $this->expectsEvents(ContactAboutBroadcastApproval::class);
 
-        $short_message = factory(ShortMessage::class)->create([
-            'from'      => '09173011987',
-            'message'   => 'approve 1234',
-            'direction' => INCOMING
-        ]);
-
-        $listener = new BroadcastApproved(\App::make(PendingRepository::class));
+        $listener = $this->app->make(BroadcastApproved::class);
         $listener->handle(new ShortMessageWasRecorded($short_message));
 
         $this->assertTrue($listener->regexMatches($attributes));
-        $this->assertEquals('1234', $attributes['token']);
-        $this->assertCount(0, $pendings->all()['data']);
+        $this->assertEquals($code, $attributes['token']);
+        $this->assertCount(0, $broadcasts->getByCriteria(new PendingCodeCriterion($code))->all());
     }
 }

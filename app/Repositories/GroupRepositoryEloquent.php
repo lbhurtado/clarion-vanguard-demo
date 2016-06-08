@@ -2,12 +2,14 @@
 
 namespace App\Repositories;
 
+use App\Entities\Pending;
+use App\Entities\Token;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Eloquent\BaseRepository;
+use App\Repositories\BroadcastRepository;
 use App\Repositories\PendingRepository;
 use App\Repositories\GroupRepository;
 use App\Events\BroadcastWasRequested;
-
 use App\Validators\GroupValidator;
 use App\Entities\Group;
 
@@ -53,21 +55,23 @@ class GroupRepositoryEloquent extends BaseRepository implements GroupRepository
 
     public function generatePendingMessages(Group $group, $message, $origin)
     {
-        $pendings = \App::make(PendingRepository::class)->skipPresenter();
-        $token = mt_rand(1000, 9999);
+        $broadcast = \App::make(BroadcastRepository::class)->skipPresenter();
+        $token = Token::generatePending();
+        $pending = $token->conjureObject()->getObject();
         foreach($group->contacts as $contact)
         {
-            $pendings->create([
-                'from'    => $origin,
-                'to'      => $contact->mobile,
-                'message' => $message,
-                'token'   => $token
-            ]);
-
+            $broadcast->createWithPending(
+                $pending,
+                [
+                    'from'    => $origin,
+                    'to'      => $contact->mobile,
+                    'message' => $message,
+                ]
+            );
         }
 
 //        event(new BroadcastWasRequested($group, $message, $origin, $token));
 
-        return $token;
+        return $token->code;
     }
 }

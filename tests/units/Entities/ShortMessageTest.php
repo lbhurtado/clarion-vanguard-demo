@@ -15,24 +15,20 @@ class ShortMessageTest extends TestCase
     /** @test */
     function short_message_has_from_to_message_fields()
     {
-        $short_message = $this->app->make(ShortMessageRepository::class)->create([
-            'from'      => '09189362340',
-            'to'        => '09173011987',
-            'message'   => 'The quick brown fox...',
-            'direction' => INCOMING
-        ]);
+        list($from, $to, $message, $direction) = [
+            Mobile::number('09189362340'),
+            Mobile::number('09173011987'),
+            'The quick brown fox...',
+            INCOMING
+        ];
+        $attributes = compact('from', 'to' ,'message', 'direction');
+        $short_message = $this->app->make(ShortMessageRepository::class)->create($attributes);
 
-        $this->assertEquals(Mobile::number('09189362340'), $short_message->from);
-        $this->assertEquals(Mobile::number('09173011987'), $short_message->to);
-        $this->assertEquals('The quick brown fox...', $short_message->message);
-        $this->assertEquals(INCOMING, $short_message->direction);
-
-        $this->seeInDatabase($short_message->getTable(), [
-            'from'      => Mobile::number('09189362340'),
-            'to'        => Mobile::number('+639173011987'),
-            'message'   => 'The quick brown fox...',
-            'direction' => INCOMING
-        ]);
+        $this->assertEquals(     $from, $short_message->from     );
+        $this->assertEquals(       $to, $short_message->to       );
+        $this->assertEquals(  $message, $short_message->message  );
+        $this->assertEquals($direction, $short_message->direction);
+        $this->seeInDatabase($short_message->getTable(), $attributes);
     }
 
     /** @test */

@@ -4,9 +4,8 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use App\Listeners\Capture\BroadcastRequest;
+use App\Repositories\BroadcastRepository;
 use App\Events\ShortMessageWasRecorded;
-use App\Repositories\PendingRepository;
-use App\Repositories\GroupRepository;
 use App\Entities\ShortMessage;
 use App\Entities\Contact;
 use App\Entities\Group;
@@ -16,51 +15,54 @@ class BroadcastRequestTest extends TestCase
 {
     use DatabaseMigrations;
 
+    private $broadcasts;
+
+    function setUp()
+    {
+        parent::setUp();
+
+        $this->broadcasts = $this->app->make(BroadcastRepository::class)->skipPresenter();
+    }
+
     /** @test */
     function broadcast_request_is_listening()
     {
-        $pendings = $this->app->make(PendingRepository::class);
-
-        $this->assertCount(0, $pendings->all()['data']);
-
+        $this->assertCount(0, $this->broadcasts->all());
         $group = factory(Group::class)->create([
             'name' => 'UP Vanguard, Inc.',
-            'alias' => 'vanguard'
+            'alias' => $token = 'vanguard'
         ]);
-
-        $contact1 = factory(Contact::class)->create();
-        $contact2 = factory(Contact::class)->create();
-        $group->contacts()->attach($contact1);
-        $group->contacts()->attach($contact2);
-
+        $cnt = 2;
+        for ($i=1;$i<=$cnt;$i++)
+        {
+            $group->contacts()->attach(factory(Contact::class)->create());
+        }
+        $text = "BroadcastRequestTest::broadcast_request_is_listening";
         $messages = [
-            "broadcast vanguard Hello there!",
-//            "send vanguard Hello there!",
-//            "@vanguard Hello there!",
+            "broadcast {$token} {$text}",
+            "send {$token} $text",
+            "@{$token} $text",
         ];
-
+        $origin = Mobile::number('09189362340');
+        $destination = Mobile::number('09173011987');
         foreach ($messages as $message)
         {
             $this->expectsEvents(ShortMessageWasRecorded::class);
-
             $short_message = factory(ShortMessage::class)->create([
-                'from'      => '09173011987',
-                'to'        => '09189362340',
+                'from'      => $origin,
+                'to'        => $destination,
                 'message'   => $message,
                 'direction' => INCOMING
             ]);
-
-            $listener = new BroadcastRequest(\App::make(GroupRepository::class));
+            $listener = $this->app->make(BroadcastRequest::class);
             $listener->handle(new ShortMessageWasRecorded($short_message));
-
+            $attributes = [];
             $this->assertTrue($listener->regexMatches($attributes));
-            $this->assertEquals('vanguard', $attributes['token']);
-            $this->assertEquals(Mobile::number('09173011987'), $attributes['mobile']);
-            $this->assertEquals("Hello there!", $attributes['message']);
+            $this->assertEquals($token, $attributes['token']);
+            $this->assertEquals($origin, $attributes['mobile']);
+            $this->assertEquals($text, $attributes['message']);
         }
-
-        $this->assertCount(1, $messages);
-        $this->assertCount(2, $group->contacts);
-        $this->assertCount(2, $pendings->all()['data']);
+        $this->assertCount($cnt, $group->contacts);
+        $this->assertCount($cnt * count($messages), $this->broadcasts->all());
     }
 }
