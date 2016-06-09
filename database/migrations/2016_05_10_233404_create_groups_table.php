@@ -17,6 +17,7 @@ class CreateGroupsTable extends Migration
             $table->increments('id');
 			$table->string('name')->unique();
 			$table->string('alias')->unique();
+			$table->integer('parent_id')->nullable()->index();
             $table->timestamps();
 		});
 	}

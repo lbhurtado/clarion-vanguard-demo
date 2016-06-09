@@ -78,4 +78,29 @@ class GroupTest extends TestCase
                'message' => $message,
         ]);
     }
+
+    /** @test */
+    function group_has_a_parent()
+    {
+        $parent = factory(Group::class)->create();
+        $group1 = factory(Group::class)->create();
+        $group2 = factory(Group::class)->create();
+        $group3 = factory(Group::class)->create();
+        $parent->groups()->save($group1);
+        $parent->groups()->save($group2);
+        $group3->parent()->associate($parent)->save();
+
+        $groups = $this->app->make(GroupRepository::class)->skipPresenter();
+        $this->assertCount(4, $groups->all());
+        $this->assertCount(3, $parent->groups);
+        $this->assertEquals($parent->id, $group1->parent->id);
+        $this->seeInDatabase($parent->getTable(), [
+                   'id' => $group1->id,
+            'parent_id' => $parent->id
+        ]);
+        $this->seeInDatabase($parent->getTable(), [
+                   'id' => $group2->id,
+            'parent_id' => $parent->id
+        ]);
+    }
 }

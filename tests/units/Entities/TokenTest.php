@@ -136,7 +136,6 @@ class TokenTest extends TestCase
 
         $object1 = $tokens->claim($contact, $token1->code);
         $this->assertCount(1, $tokens->all());
-
         $this->assertEquals($object1->attributesToArray(), $group1->attributesToArray());
 
         $name = $tokens->claim($contact, $token2->code, function($object) {

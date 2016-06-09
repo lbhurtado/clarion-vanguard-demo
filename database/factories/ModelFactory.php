@@ -25,7 +25,8 @@ $factory->define(App\Entities\Group::class, function (Faker\Generator $faker) {
     $name = $faker->company;
     return [
         'name' => $name,
-        'alias' => strtolower($name)
+        'alias' => strtolower($name),
+        'parent_id' => null,
     ];
 });
 

@@ -39,7 +39,7 @@ class BroadcastApprovedTest extends TestCase
 
         $listener = $this->app->make(BroadcastApproved::class);
         $listener->handle(new ShortMessageWasRecorded($short_message));
-
+        $attributes = null;
         $this->assertTrue($listener->regexMatches($attributes));
         $this->assertEquals($code, $attributes['token']);
         $this->assertCount(0, $broadcasts->getByCriteria(new PendingCodeCriterion($code))->all());

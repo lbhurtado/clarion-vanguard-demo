@@ -15,11 +15,20 @@ class Group extends Model implements Transformable
         'alias'
 	];
 
-    protected $attributes = [
-        'alias' => "asdsa",
-    ];
+//    protected $attributes = [
+//        'alias' => "asdsa",
+//    ];
 
     function contacts() {
         return $this->belongsToMany(Contact::class);
+    }
+
+    function parent()
+    {
+        return $this->belongsTo(Group::class, 'parent_id');
+    }
+
+    function groups() {
+        return $this->hasMany(Group::class, 'parent_id');
     }
 }
