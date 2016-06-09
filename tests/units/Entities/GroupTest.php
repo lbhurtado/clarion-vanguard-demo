@@ -89,7 +89,6 @@ class GroupTest extends TestCase
         $parent->groups()->save($group1);
         $parent->groups()->save($group2);
         $group3->parent()->associate($parent)->save();
-
         $groups = $this->app->make(GroupRepository::class)->skipPresenter();
         $this->assertCount(4, $groups->all());
         $this->assertCount(3, $parent->groups);

@@ -15,10 +15,6 @@ class Group extends Model implements Transformable
         'alias'
 	];
 
-//    protected $attributes = [
-//        'alias' => "asdsa",
-//    ];
-
     function contacts() {
         return $this->belongsToMany(Contact::class);
     }
