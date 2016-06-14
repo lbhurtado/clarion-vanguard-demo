@@ -19,7 +19,7 @@ class JoinGroup extends Command
      *
      * @var string
      */
-    protected $signature = 'txtcmdr:group:join {alias} {--mobile=} {--leave}';
+    protected $signature = 'txtcmdr:group:join {code} {--mobile=} {--leave}';
 
     /**
      * The console command description.
@@ -48,8 +48,8 @@ class JoinGroup extends Command
      */
     public function handle()
     {
-        $alias = $this->argument('alias');
-        $group = $this->groups->findByAlias($alias)->first();
+        $code = $this->argument('code');
+        $group = $this->groups->findByCode($code)->first();
 
         if (!is_null($group))
         {

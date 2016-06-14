@@ -16,6 +16,27 @@ class GroupTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
+    function group_has_a_unique_name_and_auto_slug_code()
+    {
+        $name = 'Test 1';
+        $code = 'test1';
+        $groups = $this->app->make(GroupRepository::class)->skipPresenter();
+        $group1 = $groups->create(compact('name', 'code'));
+
+        $this->assertEquals($name, $group1->name);
+        $this->assertEquals($code, $group1->code);
+
+        $name = 'Test 2';
+
+        $group2 = $groups->create(compact('name'));
+        $this->assertEquals(str_slug($name), $group2->code);
+
+        $this->setExpectedException(Illuminate\Database\QueryException::class);
+        $groups->create(compact('name'));
+    }
+
+
+    /** @test */
     function group_has_default_values_from_seed()
     {
         $this->artisan('db:seed');
@@ -58,7 +79,7 @@ class GroupTest extends TestCase
     function group_can_create_pending_messages()
     {
         $groups = $this->app->make(GroupRepository::class)->skipPresenter();
-        $group = $groups->create(['name' => 'UP Vanguard', 'alias' => 'vanguard']);
+        $group = $groups->create(['name' => 'UP Vanguard', 'code' => 'vanguard']);
         $cnt = 3;
         for ($i=1;$i<=$cnt;$i++)
         {
@@ -101,5 +122,21 @@ class GroupTest extends TestCase
                    'id' => $group2->id,
             'parent_id' => $parent->id
         ]);
+    }
+
+    /** @test */
+    function group_has_dot_notation()
+    {
+        $groups = $this->app->make(GroupRepository::class)->skipPresenter();
+        $this->assertCount(0, $groups->all());
+        $group = 'grandson.child1.parent';
+        $this->artisan('txtcmdr:group:conjure', compact('group'));
+        $this->assertCount(3, $groups->all());
+        $group = 'grandson.child2.parent';
+        $this->artisan('txtcmdr:group:conjure', compact('group'));
+        $this->assertCount(4, $groups->all());
+
+//        dd($groups->all()->toArray());
+//        dd($groups->find(2)->lineage);
     }
 }

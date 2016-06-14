@@ -30,7 +30,7 @@ class BroadcastRequestTest extends TestCase
         $this->assertCount(0, $this->broadcasts->all());
         $group = factory(Group::class)->create([
             'name' => 'UP Vanguard, Inc.',
-            'alias' => $token = 'vanguard'
+            'code' => $token = 'vanguard'
         ]);
         $cnt = 2;
         for ($i=1;$i<=$cnt;$i++)

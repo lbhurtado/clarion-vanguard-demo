@@ -12,7 +12,7 @@ class Group extends Model implements Transformable
 
     protected $fillable = [
 		'name',
-        'alias'
+        'code'
 	];
 
     function contacts() {
@@ -26,5 +26,22 @@ class Group extends Model implements Transformable
 
     function groups() {
         return $this->hasMany(Group::class, 'parent_id');
+    }
+
+    function lineage($field = 'name')
+    {
+        $group = $this;
+        do
+        {
+            $text[] = $group->$field;
+        }
+        while ($group = $group->parent);
+
+        return implode('.', $text);
+    }
+
+    public function getLineageAttribute()
+    {
+        return $this->lineage('code');
     }
 }

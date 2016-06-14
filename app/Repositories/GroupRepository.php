@@ -10,7 +10,7 @@ use App\Entities\Group;
  */
 interface GroupRepository extends RepositoryInterface
 {
-    public function findByAlias($alias);
+    public function findByCode($code);
 
     public function generatePendingMessages(Group $group, $message, $origin);
 }

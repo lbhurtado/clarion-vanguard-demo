@@ -21,14 +21,14 @@ class GroupMembershipTest extends TestCase
     {
         $group1 = factory(Group::class)->create([
             'name' => 'UP Vanguard, Inc.',
-            'alias' => 'vanguard'
+            'code' => 'vanguard'
         ]);
 
         Token::generate($group1, 'vanguard');
 
         $group2 = factory(Group::class)->create([
             'name' => 'UP Physics Association',
-            'alias' => 'uppa'
+            'code' => 'uppa'
         ]);
 
         Token::generate($group2, 'uppa');

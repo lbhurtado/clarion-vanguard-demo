@@ -12,7 +12,7 @@ class GroupMembership extends TextCommanderListener
 {
     protected $regex = "/(?<token>{App\Entities\Group})\s?(?<handle>.*)/i";
 
-    protected $column = 'alias';
+    protected $column = 'code';
 
     private $tokens;
 

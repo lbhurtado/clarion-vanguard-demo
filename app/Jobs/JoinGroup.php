@@ -16,7 +16,7 @@ class JoinGroup extends JoinUnit
      */
     public function handle(ContactRepository $contacts, GroupRepository $units)
     {
-        $this->mappings['fields']['unit'] = 'alias';
+        $this->mappings['fields']['unit'] = 'code';
 
         $this->setupContacts($contacts, $prospect);
         $this->setupUnits($units, $unit);

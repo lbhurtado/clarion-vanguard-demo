@@ -20,8 +20,8 @@ class GroupsTableSeeder extends Seeder
         foreach ($reader as $index => $row)
         {
             $name = $row[0];
-            $alias = strtolower(isset($row[1]) ?: $row[0]);
-            $groups [] = compact('name', 'alias');
+            $code = strtolower(isset($row[1]) ?: $row[0]);
+            $groups [] = compact('name', 'code');
         }
 
         DB::table('groups')->insert($groups);

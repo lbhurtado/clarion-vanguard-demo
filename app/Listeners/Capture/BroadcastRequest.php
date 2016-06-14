@@ -12,7 +12,7 @@ class BroadcastRequest extends TextCommanderListener
 {
     protected $regex = "/(?:(?:broadcast|send)\s*|@)(?<token>{App\Entities\Group})\s*(?<message>.*)/i";
 
-    protected $column = 'alias';
+    protected $column = 'code';
 
     protected $mappings = [
         'attributes' => [
@@ -36,7 +36,7 @@ class BroadcastRequest extends TextCommanderListener
      */
     protected function execute()
     {
-        $group = $this->repository->findByAlias($this->attributes['keyword'])->first();
+        $group = $this->repository->findByCode($this->attributes['keyword'])->first();
 
         return $this->repository->generatePendingMessages($group, $this->attributes['message'], $this->attributes['mobile']);
     }
