@@ -24,21 +24,21 @@ class JoinGroupCommandTest extends TestCase
         $this->assertCount(0, $groups->find($group->id)->contacts);
 
         $this->artisan('txtcmdr:group:join', [
-            'code' => $code,
+                'code' => $code,
             '--mobile' => $contact1->mobile,
-            '--leave' => false
+             '--leave' => false
         ]);
 
         $this->artisan('txtcmdr:group:join', [
-            'code' => $code,
+                'code' => $code,
             '--mobile' => $contact1->mobile,
-            '--leave' => false
+             '--leave' => false
         ]);
 
         $this->assertCount(1, $groups->find($group->id)->contacts);
 
         $this->seeInDatabase($group->contacts()->getTable(), [
-            'group_id' => $group->id,
+              'group_id' => $group->id,
             'contact_id' => $contact1->id
         ]);
 
@@ -46,9 +46,9 @@ class JoinGroupCommandTest extends TestCase
         $contact2 = $contacts->create(['mobile' => $mobile2]);
 
         $this->artisan('txtcmdr:group:join', [
-            'code' => $code,
+                'code' => $code,
             '--mobile' => $contact2->mobile,
-            '--leave' => false
+             '--leave' => false
         ]);
 
         $this->assertCount(2, $groups->find($group->id)->contacts);
@@ -59,21 +59,21 @@ class JoinGroupCommandTest extends TestCase
         ]);
 
         $this->artisan('txtcmdr:group:join', [
-            'code' => $code,
+                'code' => $code,
             '--mobile' => $mobile2,
-            '--leave' => true
+             '--leave' => true
         ]);
 
         $this->artisan('txtcmdr:group:join', [
-            'code' => $code,
+                'code' => $code,
             '--mobile' => $mobile2,
-            '--leave' => true
+             '--leave' => true
         ]);
 
         $this->assertCount(1, $groups->find($group->id)->contacts);
 
         $this->notSeeInDatabase($group->contacts()->getTable(), [
-            'group_id' => $group->id,
+              'group_id' => $group->id,
             'contact_id' => $contact2->id
         ]);
     }

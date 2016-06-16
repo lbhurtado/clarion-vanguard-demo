@@ -26,7 +26,9 @@ $factory->define(App\Entities\Group::class, function (Faker\Generator $faker) {
     return [
         'name' => $name,
         'code' => str_slug($name),
-        'parent_id' => null
+        'parent_id' => function () {
+            return factory(App\Entities\Group::class)->create(['parent_id' => null])->id;
+        },
     ];
 });
 

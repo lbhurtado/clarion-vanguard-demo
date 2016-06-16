@@ -18,8 +18,8 @@ class JoinGroupTest extends TestCase
     {
         $groups = $this->app->make(GroupRepository::class);
         $contacts = $this->app->make(ContactRepository::class);
-        $token = $name = $alias = 'vanguard';
-        $group = $groups->create(compact('name','alias'));
+        $token = $name = $code = 'vanguard';
+        $group = $groups->create(compact('name','code'));
         $mobile = Mobile::number('09173011987');
         $handle =  "Lester '91";
         $contact = $contacts->create(compact('mobile', 'handle'));

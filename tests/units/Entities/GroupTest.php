@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Prettus\Validator\Exceptions\ValidatorException;
 use App\Repositories\BroadcastRepository;
 use App\Repositories\PendingRepository;
 use App\Repositories\GroupRepository;
@@ -16,23 +17,50 @@ class GroupTest extends TestCase
     use DatabaseMigrations;
 
     /** @test */
-    function group_has_a_unique_name_and_auto_slug_code()
+    function group_has_a_name_and_code()
     {
+        $groups = $this->app->make(GroupRepository::class)->skipPresenter();
         $name = 'Test 1';
         $code = 'test1';
+        $group = $groups->create(compact('name', 'code'));
+
+        $this->assertEquals($name, $group->name);
+        $this->assertEquals($code, $group->code);
+        $this->seeInDatabase($group->getTable(), [
+            'code' => $group->code,
+            'name' => $group->name
+        ]);
+    }
+
+    /** @test */
+    function group_has_auto_slug_code()
+    {
         $groups = $this->app->make(GroupRepository::class)->skipPresenter();
-        $group1 = $groups->create(compact('name', 'code'));
+        $name = 'Test 1';
+        $group = $groups->create(compact('name'));
 
-        $this->assertEquals($name, $group1->name);
-        $this->assertEquals($code, $group1->code);
+        $this->assertEquals(str_slug($name), $group->code);
+    }
 
-        $name = 'Test 2';
-
-        $group2 = $groups->create(compact('name'));
-        $this->assertEquals(str_slug($name), $group2->code);
-
-        $this->setExpectedException(Illuminate\Database\QueryException::class);
+    /** @test */
+    function group_has_a_unique_name()
+    {
+        $groups = $this->app->make(GroupRepository::class)->skipPresenter();
+        $name = 'Test 1';
         $groups->create(compact('name'));
+        $this->setExpectedException(ValidatorException::class);
+        $groups->create(compact('name'));
+    }
+
+    /** @test */
+    function group_has_a_unique_code()
+    {
+        $groups = $this->app->make(GroupRepository::class)->skipPresenter();
+        $name = 'Test 1';
+        $code = 'test1';
+        $groups->create(compact('name', 'code'));
+        $this->setExpectedException(ValidatorException::class);
+        $groups->create(compact('code'));
     }
 
 
@@ -111,8 +139,7 @@ class GroupTest extends TestCase
         $parent->groups()->save($group2);
         $group3->parent()->associate($parent)->save();
         $groups = $this->app->make(GroupRepository::class)->skipPresenter();
-        $this->assertCount(4, $groups->all());
-        $this->assertCount(3, $parent->groups);
+
         $this->assertEquals($parent->id, $group1->parent->id);
         $this->seeInDatabase($parent->getTable(), [
                    'id' => $group1->id,
@@ -122,6 +149,18 @@ class GroupTest extends TestCase
                    'id' => $group2->id,
             'parent_id' => $parent->id
         ]);
+    }
+
+    /** @test */
+    function group_has_unique_code_and_name_fields_under_same_parent_group()
+    {
+        $parent = factory(Group::class)->create();
+        $name = 'Group 1';
+        $child1 = factory(Group::class)->create(compact('name'));
+        $child2 = factory(Group::class)->create(compact('name'));
+        $parent->groups()->save($child1);
+        $this->setExpectedException(Illuminate\Database\QueryException::class);
+        $parent->groups()->save($child2);
     }
 
     /** @test */

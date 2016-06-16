@@ -55,14 +55,13 @@ class ModelServiceProvider extends ServiceProvider
         });
 
         Group::creating(function ($model) {
-            $model->code = $model->code ?: $model->name;
-            $model->code = str_slug($model->code);
+            $model->code = $model->code ?: str_slug($model->name);
+//            $model->code = str_slug($model->code);
 //            $model->code = strtolower($model->code);
         });
 
         Group::updating(function ($model) {
-            $model->code = $model->code ?: $model->name;
-            $model->code = strtolower($model->code);
+            $model->code = $model->code ?: str_slug($model->name);
         });
 
         Broadcast::creating(function ($model) {

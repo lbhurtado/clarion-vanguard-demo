@@ -50,7 +50,6 @@ class ConjureGroup extends Command
             $parent = null;
             while ( $name = array_pop( $tokens ) )
             {
-//                $name = $parent ? "{$name}.{$parent->alias}" : $name;
                 $group = $this->groups->updateOrCreate(compact('name'));
                 if ($group)
                 {
